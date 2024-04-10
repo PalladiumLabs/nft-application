@@ -156,6 +156,11 @@ import { ethers, toBigInt } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
 import { useWalletClient } from "wagmi";
+import Image from "next/image";
+import img1 from "../assets/images/Group 771.png";
+import img2 from "../assets/images/Group 663.png";
+import img3 from "../assets/images/image 128.png";
+import img4 from "../assets/images/Group 666.png";
 
 export default function Repay() {
   const [userInputs, setUserInputs] = useState({
@@ -545,18 +550,20 @@ export default function Repay() {
   };
 
   return (
-    <div className="container  flex flex-row justify-between gap-16">
+    <div className="container  flex flex-row justify-between gap-32">
       {/* <div className="flex gap-10 items-start "> */}
       <div>
         <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
           <div className="relative">
             <Label htmlFor="items" className="text-white ">
-              Repay
+              Repay PUSD
             </Label>
             <div
               className="flex items-center border border-yellow-300 "
               style={{ backgroundColor: "#3f3b2d" }}
             >
+              <Image src={img4} alt="home" />{" "}
+              <span className="text-white text-sm">PUSD</span>
               <Input
                 id="items"
                 placeholder="0.000 BTC"
@@ -582,7 +589,7 @@ export default function Repay() {
               {balanceData?.symbol}
             </span> */}
           </div>
-          <span className="text-white">
+          <span className="text-white text-sm ">
             Available {pusdBalance} PUSD
             {/* {balanceData?.symbol} */}
           </span>
@@ -594,6 +601,9 @@ export default function Repay() {
               className="flex items-center border border-yellow-300 "
               style={{ backgroundColor: "#3f3b2d" }}
             >
+              {" "}
+              <Image src={img3} alt="home" />
+              <span className="text-white text-sm">BTC</span>
               <Input
                 id="quantity"
                 placeholder="0.00 PUSD"
@@ -610,7 +620,7 @@ export default function Repay() {
               <span>${availCollTotal}</span>
               {/* <span className="text-white">0</span> */}
             </div>
-            <div className="text-white">
+            <div className="text-white text-sm">
               Available {collAmount}
               {/* Available {availableBorrow} */}
             </div>

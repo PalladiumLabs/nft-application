@@ -20,6 +20,9 @@ import { useBalance, useWalletClient } from "wagmi";
 import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
 
+import img2 from "../assets/images/Group 663.png";
+import img3 from "../assets/images/image 128.png";
+import img4 from "../assets/images/Group 666.png";
 import web3 from "web3";
 
 export const OpenTrove = () => {
@@ -249,13 +252,16 @@ export const OpenTrove = () => {
   return (
     // <div className="flex justify-around items-start">
     <div>
-      <div className="w-full  " style={{ backgroundColor: "#3f3b2d" }}>
+      <div
+        className="w-screen max-w-screen-lg ml-[4rem]  "
+        style={{ backgroundColor: "#3f3b2d" }}
+      >
         <div className=" mx-10 my-10 flex flex-row m-4 gap-12">
           <div className="h-[192px]">
             <Image src={img1} alt="home" />
           </div>
 
-          <div className="mt-10">
+          <div>
             <p className="text-white text-center text-2xl font-bold mb-5">
               You don't have an existing trove
             </p>
@@ -269,13 +275,17 @@ export const OpenTrove = () => {
         </div>
       </div>
 
-      <div className="container  flex flex-row justify-between gap-16 mt-2">
+      <div className="container  flex flex-row justify-between gap-32 mt-2">
         {/* Container */}
 
         <div className="grid w-full max-w-sm items-start gap-2 mx-auto  text-white p-5">
           <div className="relative">
-            <Label htmlFor="items">Deposit Collatoral</Label>
-            <div className="flex items-center space-x-2">
+            <Label htmlFor="items" className="text-sm mb-1">
+              Deposit Collatoral
+            </Label>
+            <div className="flex items-center space-x-2 border border-yellow-300">
+              <Image src={img3} alt="home" />
+              <span className="text-white text-sm">BTC</span>
               <Input
                 id="items"
                 placeholder="0.000 BTC"
@@ -287,7 +297,7 @@ export const OpenTrove = () => {
                   makeCalculations(userInputs.borrow, newCollValue || "0");
                 }}
                 className="w-[23.75rem] h-[4rem] text-white"
-                style={{ backgroundColor: "#3f3b2d" }}
+                style={{ backgroundColor: "#272315" }}
               />
               {/* want to keep it initially to (price} */}
               <span>{totalCollateral}</span>
@@ -306,11 +316,13 @@ export const OpenTrove = () => {
             </span>
           </div>
           <div className="relative">
-            <Label htmlFor="quantity">Borrow</Label>
-            <div className="flex items-center space-x-2">
+            <Label htmlFor="quantity">Borrow PUSD</Label>
+            <div className="flex items-center space-x-2 border border-yellow-300">
+              <Image src={img4} alt="home" />
+              <span className="text-white text-sm">PSUD</span>
               <Input
                 id="quantity"
-                placeholder="0.00 PUSD"
+                placeholder="Enter Borrow Amount"
                 type="number"
                 value={userInputs.borrow}
                 onChange={(e) => {
@@ -321,10 +333,22 @@ export const OpenTrove = () => {
                     userInputs.collatoral
                   );
                 }}
+                // id="quantity"
+                // placeholder="0.00 PUSD"
+                // type="number"
+                // value={userInputs.borrow}
+                // onChange={(e) => {
+                //   const newBorrowValue = e.target.value;
+                //   setUserInputs({ ...userInputs, borrow: newBorrowValue });
+                //   makeCalculations(
+                //     newBorrowValue || "0",
+                //     userInputs.collatoral
+                //   );
+                // }}
                 className="w-[23.75rem] h-[4rem] text-white"
-                style={{ backgroundColor: "#3f3b2d" }}
+                style={{ backgroundColor: "#272315" }}
               />
-              <Button
+              {/* <Button
                 // onClick={calculateAvaialbleBorrow}
                 className="rounded-l-none text-white "
                 size="sm"
@@ -334,7 +358,7 @@ export const OpenTrove = () => {
               </Button>
               <Button size="sm" className=" text-white" variant="outline">
                 -
-              </Button>
+              </Button> */}
             </div>
             <span>Available {maxBorrow}</span>{" "}
             {Number(userInputs.borrow) < 500 && (

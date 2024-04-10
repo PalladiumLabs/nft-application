@@ -20,12 +20,16 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
 import img2 from "../assets/images/Group 663.png";
+import img3 from "../assets/images/image 128.png";
+import img4 from "../assets/images/Group 666.png";
 import { Knob } from "primereact/knob";
 import { TabView, TabPanel } from "primereact/tabview";
 import Repay from "./Repay";
 import { CloseTrove } from "./Close";
 import { OpenTrove } from "./OpenTrove";
+import "../App.css";
 
+// finalPanel1912\app\App.css
 const Borrow = () => {
   const [userInputs, setUserInputs] = useState({
     depositCollateral: "0",
@@ -53,6 +57,7 @@ const Borrow = () => {
   const [staticCollAmount, setStaticCollAmount] = useState(0);
   const [staticBorrowingFee, setStaticBorrowingFee] = useState(0);
   const [value, setValue] = useState(60);
+  const [userInput, setUserInput] = useState("0");
 
   const [systemLTV, setSystemLTV] = useState("0");
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
@@ -438,6 +443,20 @@ const Borrow = () => {
     divideBy *
     (Number(entireDebtAndColl.debt) / Number(entireDebtAndColl.coll));
   //   console.log("nk1", walletClient?.account.address);
+  const handlePercentageClick = (percentage: any) => {
+    const pow = Decimal.pow(10, 18);
+    const _1e18 = toBigInt(pow.toFixed());
+    const percentageDecimal = new Decimal(percentage).div(100);
+    const pusdBalanceNumber = parseFloat(fetchedPrice);
+    if (!isNaN(pusdBalanceNumber)) {
+      const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
+      const stakeFixed = maxStake.toFixed();
+      const stakeFixedConv = (toBigInt(stakeFixed) / _1e18).toString();
+      setUserInput(stakeFixedConv);
+    } else {
+      console.error("Not enough pusd to unstake:", pusdBalanceNumber);
+    }
+  };
   const getTroveStatus = async () => {
     console.log("nitu1", walletClient?.account.address);
     if (!walletClient) return null;
@@ -458,7 +477,7 @@ const Borrow = () => {
     <div>
       {troveStatus === "ACTIVE" && (
         <div>
-          <div className="w-[60rem] h-[15rem] flex flex-row justify-between mx-20 gap-10">
+          <div className="w-[70rem] h-[15rem] flex flex-row  mx-16 gap-10">
             <div>
               <p className="text-white text-base mt-8 mb-4">
                 Available to borrow
@@ -472,7 +491,7 @@ const Borrow = () => {
               <div className="flex flex-row justify-between mt-5 gap-4">
                 <div
                   className="flex flex-col text-white w-44 h-28 p-5"
-                  style={{ backgroundColor: "#3f3b2d" }}
+                  style={{ backgroundColor: "#343127" }}
                 >
                   <span>Collateral</span>
                   <span>{entireDebtAndColl.coll} PUSD</span>
@@ -480,7 +499,7 @@ const Borrow = () => {
                 </div>
                 <div
                   className="flex flex-col text-white  w-44 h-28 p-5"
-                  style={{ backgroundColor: "#3f3b2d" }}
+                  style={{ backgroundColor: "#343127" }}
                 >
                   <span>Debt</span>
                   <span>{entireDebtAndColl.debt} PUSD</span>
@@ -488,15 +507,15 @@ const Borrow = () => {
               </div>
             </div>
             <div
-              className="w-[16rem] h-[12rem] mt-16"
-              style={{ backgroundColor: "#3f3b2d" }}
+              className="w-[12rem] h-[12rem] mt-16"
+              style={{ backgroundColor: "#343127" }}
             >
               <div className="flex flex-col gap-8 text-white px-8 py-4">
                 <div className="flex flex-col">
                   <span>System LTV</span>
                   <span>{systemLTV}%</span>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col ">
                   <span>Trove Status</span>
                   <div className="border border-lime-500 text-lime-500 justify-center items-center text-center mt-2">
                     {troveStatus}{" "}
@@ -506,7 +525,7 @@ const Borrow = () => {
             </div>
             <div
               className="w-[21.5rem] h-[12rem] mt-16 px-8 py-4"
-              style={{ backgroundColor: "#3f3b2d" }}
+              style={{ backgroundColor: "#343127" }}
             >
               <div className="flex gap-16 text-white">
                 <div className="flex flex-col gap-2">
@@ -533,32 +552,41 @@ const Borrow = () => {
                     valueColor="#3dde84"
                     strokeWidth={10}
                   />
-                  <span>{value}%</span>
-                  <span className="text-xs">YOUR LTV</span>
+                  <span className="text-xs ml-2">{value}%</span>
+                  <span className="text-xs ml-2">/100%</span>
+                  <span className="text-xs ml-2">YOUR LTV</span>
                 </div>
               </div>
             </div>
           </div>
-          <div className="h-screen" style={{ backgroundColor: "#272315" }}>
+          <div className="" style={{ backgroundColor: "#272315" }}>
             <div className="p-10 pt-24 flex gap-x-36">
               <div className="  border border-yellow-800">
                 <TabView>
                   <TabPanel
-                    className=" p-1 bg-yellow-400 text-xl font-semibold text-black"
+                    className=" p-1 bg-yellow-400 text-xl  text-black "
                     header="Borrow"
                   >
-                    <div style={{ backgroundColor: "#272315" }}>
-                      <div className="container   flex flex-row justify-between gap-16">
+                    <div
+                      className="pb-10"
+                      style={{ backgroundColor: "#272315" }}
+                    >
+                      <div className="container   flex flex-row justify-between gap-32">
                         <div>
                           <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
                             <div className="relative">
-                              <Label htmlFor="items" className="text-white ">
+                              <Label
+                                htmlFor="items"
+                                className="text-white text-sm mb-2"
+                              >
                                 Deposit Collatoral
                               </Label>
                               <div
                                 className="flex items-center border border-yellow-300 "
                                 style={{ backgroundColor: "#3f3b2d" }}
                               >
+                                <Image src={img3} alt="home" />{" "}
+                                <span className="text-white text-sm">BTC</span>
                                 <Input
                                   id="items"
                                   placeholder="0.000 BTC"
@@ -574,8 +602,11 @@ const Borrow = () => {
                                   className="w-[23.75rem] h-[4rem] text-white"
                                   style={{ backgroundColor: "#3f3b2d" }}
                                 />
-                                <div style={{ backgroundColor: "#3f3b2d" }}>
-                                  {totalCollateral}
+                                <div
+                                  className="w-8 text-white"
+                                  style={{ backgroundColor: "#3f3b2d" }}
+                                >
+                                  ${totalCollateral}
                                 </div>
                                 {/* <Button className="w-10" size="sm" variant="outline">
                     Max
@@ -586,19 +617,69 @@ const Borrow = () => {
                           {balanceData?.symbol}
                         </span> */}
                             </div>
-                            <span className="text-white">
-                              Available{" "}
-                              {Number(balanceData?.formatted).toFixed(3)}{" "}
-                              {/* {balanceData?.symbol} */}
-                            </span>
+                            <div className="flex flex-row justify-between">
+                              <span className="text-white mt-2">
+                                Available{" "}
+                                {Number(balanceData?.formatted).toFixed(3)}{" "}
+                                {/* {balanceData?.symbol} */}
+                              </span>
+                              <div className="flex gap-x-2 mt-2">
+                                <Button
+                                  className=" w-5 text-sm font-semibold border-2 border-yellow-900"
+                                  style={{
+                                    backgroundColor: "#3b351b",
+                                    borderRadius: "0",
+                                  }}
+                                  onClick={() => handlePercentageClick(25)}
+                                >
+                                  25%
+                                </Button>
+                                <Button
+                                  className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                  style={{
+                                    backgroundColor: "#3b351b",
+                                    borderRadius: "0",
+                                  }}
+                                  onClick={() => handlePercentageClick(50)}
+                                >
+                                  50%
+                                </Button>
+                                <Button
+                                  className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                  style={{
+                                    backgroundColor: "#3b351b",
+                                    borderRadius: "0",
+                                  }}
+                                  onClick={() => handlePercentageClick(75)}
+                                >
+                                  75%
+                                </Button>
+                                <Button
+                                  className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                  style={{
+                                    backgroundColor: "#3b351b",
+                                    borderRadius: "0",
+                                  }}
+                                  onClick={() => handlePercentageClick(100)}
+                                >
+                                  100%
+                                </Button>
+                              </div>
+                            </div>
+
                             <div className="relative">
-                              <Label htmlFor="quantity" className="text-white">
+                              <Label
+                                htmlFor="quantity"
+                                className="text-white text-sm mb-2"
+                              >
                                 Borrow
                               </Label>
                               <div
                                 className="flex items-center border border-yellow-300 "
                                 style={{ backgroundColor: "#3f3b2d" }}
                               >
+                                <Image src={img4} alt="home" />{" "}
+                                <span className="text-white text-sm">PSUD</span>
                                 <Input
                                   id="quantity"
                                   placeholder="0.00 PUSD"
@@ -616,8 +697,57 @@ const Borrow = () => {
                                 />
                                 {/* <span className="text-white">0</span> */}
                               </div>
-                              <div className="text-white">
+                              {/* <div className="text-white mt-2">
                                 Available {availableBorrow}
+                              </div> */}
+                              <div className="flex flex-row justify-between">
+                                <span className="text-white mt-2">
+                                  Available{" "}
+                                  {Number(balanceData?.formatted).toFixed(3)}{" "}
+                                  {/* {balanceData?.symbol} */}
+                                </span>
+                                <div className="flex gap-x-2 mt-2">
+                                  <Button
+                                    className=" w-5 text-sm font-semibold border-2 border-yellow-900"
+                                    style={{
+                                      backgroundColor: "#3b351b",
+                                      borderRadius: "0",
+                                    }}
+                                    onClick={() => handlePercentageClick(25)}
+                                  >
+                                    25%
+                                  </Button>
+                                  <Button
+                                    className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                    style={{
+                                      backgroundColor: "#3b351b",
+                                      borderRadius: "0",
+                                    }}
+                                    onClick={() => handlePercentageClick(50)}
+                                  >
+                                    50%
+                                  </Button>
+                                  <Button
+                                    className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                    style={{
+                                      backgroundColor: "#3b351b",
+                                      borderRadius: "0",
+                                    }}
+                                    onClick={() => handlePercentageClick(75)}
+                                  >
+                                    75%
+                                  </Button>
+                                  <Button
+                                    className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                    style={{
+                                      backgroundColor: "#3b351b",
+                                      borderRadius: "0",
+                                    }}
+                                    onClick={() => handlePercentageClick(100)}
+                                  >
+                                    100%
+                                  </Button>
+                                </div>
                               </div>
                               <Button
                                 onClick={() =>
@@ -699,7 +829,7 @@ const Borrow = () => {
                     header="Repay"
                   >
                     <div
-                      className="w-full h-full"
+                      className="w-full h-full pb-10"
                       style={{ backgroundColor: "#272315" }}
                     >
                       <Repay />
@@ -952,15 +1082,7 @@ const Borrow = () => {
                     {/* <span className="text-white">0</span> */}
                   </div>
                   <div className="text-white">Available {availableBorrow}</div>
-                  <Button
-                    onClick={() =>
-                      handleConfirmClick(
-                        userInputs.borrow,
-                        userInputs.depositCollateral
-                      )
-                    }
-                    className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold"
-                  >
+                  <Button className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold">
                     Connect Wallet
                   </Button>
                 </div>
