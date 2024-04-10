@@ -27,9 +27,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="rounded-3xl ttable mainT border ml-7  overflow-y-scroll h-[420px] p-2 mt-3 mr-6">
+        {/* <div className="rounded-3xl ttable mainT border ml-7  overflow-y-scroll h-[420px] p-2 mt-3 mr-6">
           <TableDemo data={PATIENTS} header={PATIENTS_HEADER} />
-        </div>
+        </div> */}
       </div>
     </div>
   );
