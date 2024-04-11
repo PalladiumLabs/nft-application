@@ -13,10 +13,11 @@ import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useBalance, useWalletClient } from "wagmi";
+import { useAccount, useBalance, useWalletClient } from "wagmi";
 import web3 from "web3";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CustomConnectButton } from "@/components/connectBtn";
 import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
 import img2 from "../assets/images/Group 663.png";
@@ -29,7 +30,6 @@ import { CloseTrove } from "./Close";
 import { OpenTrove } from "./OpenTrove";
 import "../App.css";
 
-// finalPanel1912\app\App.css
 const Borrow = () => {
   const [userInputs, setUserInputs] = useState({
     depositCollateral: "0",
@@ -105,7 +105,7 @@ const Borrow = () => {
     priceFeedAbi,
     provider
   );
-
+  const { isConnected } = useAccount();
   const { toWei, toBigInt } = web3.utils;
   const pow20 = Decimal.pow(10, 20);
   const pow18 = Decimal.pow(10, 18);
@@ -994,13 +994,16 @@ const Borrow = () => {
       )}
       {troveStatus === "" && (
         <>
-          <div className="container " style={{ backgroundColor: "#3f3b2d" }}>
+          <div
+            className="w-screen max-w-screen-lg ml-[4rem] "
+            style={{ backgroundColor: "#3f3b2d" }}
+          >
             <div className=" mx-10 my-10 flex flex-row m-4 gap-12">
               <div className="h-[192px]">
                 <Image src={img1} alt="home" />
               </div>
 
-              <div className="mt-10">
+              <div>
                 <p className="text-white text-center text-2xl font-bold mb-5">
                   You don't have an existing trove
                 </p>
@@ -1084,6 +1087,7 @@ const Borrow = () => {
                   <div className="text-white">Available {availableBorrow}</div>
                   <Button className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold">
                     Connect Wallet
+                    {/* <CustomConnectButton /> */}
                   </Button>
                 </div>
               </div>
