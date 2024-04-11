@@ -504,7 +504,7 @@ const Portfolio = () => {
   console.log({ troveStatus });
   return (
     <div>
-      {troveStatus === "INACTIVE" && (
+      {troveStatus === "ACTIVE" && (
         <div className="flex flex-col gap-10 my-[2.5rem] ml-[2.5rem] mr-[2.5rem]">
           {/* Hesading */}
           <div className="flex  flex-row justify-between">
@@ -629,7 +629,7 @@ const Portfolio = () => {
           </div>
         </div>
       )}
-      {troveStatus === "ACTIVE" && (
+      {troveStatus === "INACTIVE" && (
         <div className="mt-10 flex flex-row justify-between gap-10">
           <div
             className="w-[35rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
