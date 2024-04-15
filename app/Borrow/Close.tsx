@@ -152,7 +152,7 @@ export const CloseTrove = () => {
         </div> */}
         <div className="flex justify-between">
           <span>Collateral</span>
-          <span>{debtCollValue.coll.toString()} ETH</span>
+          <span>{debtCollValue.coll.toString()} BTC</span>
         </div>
         <div className="flex justify-between">
           <span>Debt</span>

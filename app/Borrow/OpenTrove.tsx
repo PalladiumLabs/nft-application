@@ -19,10 +19,11 @@ import { useDebounce } from "react-use";
 import { useBalance, useWalletClient } from "wagmi";
 import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
-
 import img2 from "../assets/images/Group 663.png";
-import img3 from "../assets/images/image 128.png";
-import img4 from "../assets/images/Group 666.png";
+// import img3 from "../assets/images/image 128.png";
+// import img4 from "../assets/images/Group 666.svg";
+import img3 from "../assets/images/Group 661.svg";
+import img4 from "../assets/images/Group 666.svg";
 import web3 from "web3";
 
 export const OpenTrove = () => {
@@ -262,7 +263,7 @@ export const OpenTrove = () => {
           </div>
 
           <div>
-            <p className="text-white text-center text-2xl font-bold mb-5">
+            <p className="text-white text-center text-2xl font-bold mb-[1.25rem]">
               You don't have an existing trove
             </p>
             <p className="text-yellow-300 text-left text-xl mb-2">
@@ -362,7 +363,7 @@ export const OpenTrove = () => {
             </div>
             <span>Available {maxBorrow}</span>{" "}
             {Number(userInputs.borrow) < 500 && (
-              <span className="my-2 mb-5 text-red-500 text-sm">
+              <span className="my-2 mb-[1.25rem] text-red-500 text-sm">
                 Borrow amount should be greater than 500
               </span>
             )}
@@ -415,7 +416,7 @@ export const OpenTrove = () => {
           {/* <div className=" mr-44 text-white p-10"> */}
           <div className="flex gap-40 justify-between">
             <span>Loan-To-Value</span>
-            <span>{loanToValue.toFixed(3)}%</span>
+            <span>{loanToValue.toFixed(2)} % </span>
           </div>
           {/* <div className="flex gap-40">
 					<span>Est. Debt Ahead</span>
@@ -423,7 +424,9 @@ export const OpenTrove = () => {
 				</div> */}
           <div className="flex gap-40 justify-between">
             <span>Liq. Reserve</span>
-            <span>{calculatedValues.liquidationReserve}</span>
+            <span>
+              {Number(calculatedValues.liquidationReserve).toFixed(2)}
+            </span>
           </div>
           <div className="flex gap-40 justify-between">
             <span>Liquidation Price</span>

@@ -1,141 +1,3 @@
-//
-// <div className="container  flex flex-row justify-between gap-16">
-//                         <div>
-//                           <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
-//                             <div className="relative">
-//                               <Label htmlFor="items" className="text-white ">
-//                               Repay
-//                               </Label>
-//                               <div
-//                                 className="flex items-center border border-yellow-300 "
-//                                 style={{ backgroundColor: "#3f3b2d" }}
-//                               >
-//                                 <Input
-//                                  id="items"
-//                                  placeholder="0.000 BTC"
-//                                  type="number"
-//                                  value={userInputs.lusdAmount}
-//                                  onChange={(e) => {
-//                                    const newCollValue = e.target.value;
-//                                    setUserInputs({ ...userInputs, lusdAmount: newCollValue });
-//                                    // makeCalculations(userInputs.borrow, newCollValue || "0");
-//                                  }}
-//                                   className="w-[23.75rem] h-[4rem] text-white"
-//                                   style={{ backgroundColor: "#3f3b2d" }}
-//                                 />
-//                                 {/* <div style={{ backgroundColor: "#3f3b2d" }}>
-//                                   {totalCollateral}
-//                                 </div> */}
-//                                 {/* <Button className="w-10" size="sm" variant="outline">
-//                     Max
-//                   </Button> */}
-//                   </div>
-//                   {/* <span className="text-white">
-//               Available {Number(balanceData?.formatted).toFixed(3)}{" "}
-//               {balanceData?.symbol}
-//             </span> */}
-//                 </div>
-//                 <span className="text-white">
-//                   Available{" "}
-//                   Available {pusdBalance} PUSD
-//                   {/* {balanceData?.symbol} */}
-//                 </span>
-//                 <div className="relative">
-//                   <Label htmlFor="quantity" className="text-white">
-//                   Withdraw Collateral
-//                   </Label>
-//                   <div
-//                     className="flex items-center border border-yellow-300 "
-//                     style={{ backgroundColor: "#3f3b2d" }}
-//                   >
-//                     <Input
-//                      id="quantity"
-//                      placeholder="0.00 PUSD"
-//                      type="number"
-//                      value={userInputs.coll}
-//                      onChange={(e) => {
-//                        const newBorrowValue = e.target.value;
-//                        setUserInputs({ ...userInputs, coll: newBorrowValue });
-//                        // makeCalculations(newBorrowValue || "0", userInputs.collatoral);
-//                      }}
-//                       className="w-[23.75rem] h-[4rem] text-white"
-//                       style={{ backgroundColor: "#3f3b2d" }}
-//                     />
-//                     <span>${availCollTotal}</span>
-//                     {/* <span className="text-white">0</span> */}
-//                   </div>
-//                   <div className="text-white">
-//                   Available {collAmount}
-//                     {/* Available {availableBorrow} */}
-//                   </div>
-//                   <Button
-//                     onClick={() =>
-//                       handleConfirmClick(userInputs.lusdAmount, userInputs.coll)
-//                     }
-//                     className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold"
-//                   >
-//                     UPDATE TROVE
-//                   </Button>
-//                 </div>
-//               </div>
-//             </div>
-//             <div
-//               className="h-[16rem] w-auto p-10  mt-10"
-//               style={{ backgroundColor: "#3f3b2d" }}
-//             >
-//               <div className="flex gap-40 mb-2 text-white ">
-//                 <span>Loan-To-Value</span>
-//                 <span>{staticLtv} %</span>
-//               </div>
-
-//               <div className="flex gap-40 text-white">
-//                 <span>Liq. Reserve</span>
-//                 <span>{lr} PUSD</span>
-//               </div>
-//               <div className="flex gap-40 text-white">
-//                 <span>Liquidation Price</span>
-//                 <span>{staticLiquidationPrice} PUSD</span>
-//               </div>
-//               <div className="flex gap-40 text-white">
-//                 <span>Payable Debt</span>
-//                 <span>{staticPayableDebt} PUSD</span>
-//               </div>
-//               <div className="flex gap-40 text-white">
-//                 <span>Total Debt</span>
-//                 <span>{totalDebt} PUSD</span>
-//               </div>
-//               <div className="flex gap-40 text-white">
-//                 <span>Liq. Reserve</span>
-//                 <span>{lr} PUSD</span>
-//               </div>
-//               {/* DYANAMIC */}
-//               <div className="flex gap-40">
-//             <span>Loan-To-Value</span>
-//             <span>{ltv} %</span>
-//         </div>
-//         <div className="flex gap-40">
-//             <span>Liq. Reserve</span>
-//             <span>{lr} PUSD</span>
-//         </div>
-//         <div className="flex gap-40">
-//             <span>Payable Debt</span>
-//             <span>{payableDebt} PUSD</span>
-//         </div>
-//         <div className="flex gap-40">
-//             <span>Liquidation Price</span>
-//             <span>{liquidationPrice} PUSD</span>
-//         </div>
-//         <div className="flex gap-40">
-//             <span>Total Debt</span>
-//             <span>{totalDebt} PUSD</span>
-//         </div>
-//         <div className="flex gap-40">
-//             <span>Total Collateral</span>
-//             <span>{totalColl} PUSD</span>
-//         </div>
-//             </div>
-//           </div>
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -157,10 +19,10 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
 import { useWalletClient } from "wagmi";
 import Image from "next/image";
-import img1 from "../assets/images/Group 771.png";
-import img2 from "../assets/images/Group 663.png";
-import img3 from "../assets/images/image 128.png";
-import img4 from "../assets/images/Group 666.png";
+
+// import img3 from "../assets/images/image 128.png";
+import img3 from "../assets/images/Group 661.svg";
+import img4 from "../assets/images/Group 666.svg";
 
 export default function Repay() {
   const [userInputs, setUserInputs] = useState({
@@ -617,7 +479,9 @@ export default function Repay() {
                 className="w-[23.75rem] h-[4rem] text-white"
                 style={{ backgroundColor: "#3f3b2d" }}
               />
-              <span>${availCollTotal}</span>
+              <span className="text-white">
+                ${Number(availCollTotal).toFixed(2)}
+              </span>
               {/* <span className="text-white">0</span> */}
             </div>
             <div className="text-white text-sm">
@@ -639,59 +503,62 @@ export default function Repay() {
       <div className="m-4" style={{ backgroundColor: "#3f3b2d" }}>
         {/* Static Stats */}
 
-        <div className="  p-10 mb-5 mr-28 min-w-96 text-white text-sm">
-          <div className="flex gap-40 mb-2">
+        <div className="  px-10 pt-10  min-w-96 text-white text-sm">
+          <div className="flex mb-2 justify-between">
             <span>Loan-To-Value</span>
-            <span>{staticLtv} %</span>
+
+            <span> {Number(staticLtv).toFixed(2)} %</span>
           </div>
-          <div className="flex  gap-40 mb-2">
+          <div className="flex  gap-20 mb-2 justify-between">
             <span>Liq. Reserve</span>
-            <span>{lr} PUSD</span>
+
+            <span>{Number(lr).toFixed(2)} PUSD</span>
           </div>
-          <div className="flex  gap-40 mb-2">
+          <div className="flex  gap-20 mb-2 justify-between">
             <span>Payable Debt</span>
-            <span>{staticPayableDebt} PUSD</span>
+            <span>{Number(staticPayableDebt).toFixed(2)} PUSD</span>
           </div>
-          <div className="flex  gap-40 mb-2">
+          <div className="flex  gap-20 mb-2 justify-between">
             <span>Liquidation Price</span>
-            <span>{staticLiquidationPrice} PUSD</span>
+            <span>{Number(staticLiquidationPrice).toFixed(2)} PUSD</span>
           </div>
-          <div className="flex gap-40 mb-2 ">
+          <div className="flex gap-20 mb-2 justify-between">
             <span>Total Debt</span>
-            <span>{staticTotalDebt} PUSD</span>
+            <span>{Number(staticTotalDebt).toFixed(2)} PUSD</span>
           </div>
-          <div className="flex gap-40 mb-2">
+          <div className="flex gap-20 mb-2 justify-between">
             <span>Total Collateral</span>
-            <span>{staticTotalColl} PUSD</span>
+            <span>{Number(staticTotalColl).toFixed(4)} BTC</span>
           </div>
         </div>
-
+        <div className="px-10 border mb-2 "></div>
         {/* dysmani Stats */}
 
-        <div className="  p-10 mr-28 min-w-96 text-white text-sm">
-          <div className="flex gap-40 mb-2">
+        <div className="  px-10  min-w-96 text-white text-sm">
+          <div className="flex mb-2 justify-between">
             <span>Loan-To-Value</span>
-            <span>{ltv} %</span>
+
+            <span>{Number(ltv).toFixed(2)} %</span>
           </div>
-          <div className="flex gap-40 mb-2">
+          <div className="flex mb-2 justify-between">
             <span>Liq. Reserve</span>
-            <span>{lr} PUSD</span>
+            <span>{Number(lr).toFixed(2)} PUSD</span>
           </div>
-          <div className="flex gap-40 mb-2">
+          <div className="flex mb-2 justify-between">
             <span>Payable Debt</span>
-            <span>{payableDebt} PUSD</span>
+            <span>{Number(payableDebt).toFixed(2)} PUSD</span>
           </div>
-          <div className="flex gap-40 mb-2">
+          <div className="flex mb-2 justify-between">
             <span>Liquidation Price</span>
-            <span>{liquidationPrice} PUSD</span>
+            {Number(liquidationPrice).toFixed(2)} PUSD
           </div>
-          <div className="flex gap-40 mb-2">
+          <div className="flex mb-2 justify-between">
             <span>Total Debt</span>
-            <span>{totalDebt} PUSD</span>
+            <span>{Number(totalDebt).toFixed(2)} PUSD</span>
           </div>
-          <div className="flex gap-40 mb-2">
+          <div className="flex mb-2 justify-between">
             <span>Total Collateral</span>
-            <span>{totalColl} PUSD</span>
+            <span>{Number(totalColl).toFixed(4)} BTC</span>
           </div>
         </div>
       </div>

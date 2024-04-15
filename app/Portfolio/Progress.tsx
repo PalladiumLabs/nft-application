@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 const Progress = ({ total, supplied }: { total: number; supplied: number }) => {
   const [percentage, setPercentage] = useState(0);
-
+  console.log("pup", total, supplied);
   useEffect(() => {
     const calculatePercentage = () => {
       if (total === 0) return 0;

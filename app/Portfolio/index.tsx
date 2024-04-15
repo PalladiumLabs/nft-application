@@ -20,19 +20,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Image from "next/image";
-import port1 from "../assets/images/port1.svg";
+// import img1 from "../assets/images/port+.svg";
 import img1 from "../assets/images/Group 771.png";
-import port2 from "../assets/images/Group 784.svg";
+import port2 from "../assets/images/port2.svg";
 import img2 from "../assets/images/Group 784.png";
 import { Knob } from "primereact/knob";
 // import { ProgressBar } from "primereact/progressbar";
+import "../App.css";
 import Progress from "./Progress";
+import Layout from "./layout";
 
 const Portfolio = () => {
   const [userInputs, setUserInputs] = useState({
     depositCollateral: "0",
     borrow: "0",
   });
+  const { isConnected } = useAccount();
   const [borrowingFee, setBorrowingFee] = useState(0);
   const [totalDebt, setTotalDebt] = useState(0);
   const [ltv, setLtv] = useState(0);
@@ -54,7 +57,9 @@ const Portfolio = () => {
   const [staticCollAmount, setStaticCollAmount] = useState(0);
   const [staticBorrowingFee, setStaticBorrowingFee] = useState(0);
   const [value, setValue] = useState(60);
-  const [userInput, setUserInput] = useState("0");
+  // const [userInput, setUserInput] = useState("0");
+  let totalSupply = 100;
+  let suppliedAmount = 40;
 
   const [systemLTV, setSystemLTV] = useState("0");
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
@@ -113,13 +118,12 @@ const Portfolio = () => {
   const [totalStakedValue, setTotalStakedValue] = useState("0");
 
   //ACTIVE
-  const { isConnected } = useAccount();
+
   const { toWei, toBigInt } = web3.utils;
   const pow20 = Decimal.pow(10, 20);
   const pow18 = Decimal.pow(10, 18);
-  const totalSupply = 100;
-  const suppliedAmount = 40;
 
+  // {Number(entireDebtAndColl.debt)}
   useEffect(() => {
     const pow = Decimal.pow(10, 18);
     const pow16 = Decimal.pow(10, 16);
@@ -136,7 +140,8 @@ const Portfolio = () => {
       } = await troveManagerContract.getEntireDebtAndColl(
         walletClient?.account.address
       );
-      console.log(entireDebtAndColl.coll);
+      console.log("hello1", entireDebtAndColl);
+      console.log("hello", entireDebtAndColl.coll);
 
       console.log("Collateral (raw):", coll); // Log the raw collateral value
       const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
@@ -220,20 +225,20 @@ const Portfolio = () => {
       console.log({ lr, lrFormatted });
     };
 
-    const getPrice = async () => {
-      try {
-        if (!provider || hasPriceFetched) return null;
-        const fetchedPrice = await priceFeedContract.getPrice();
-        // const convertedFetchedPrice = (fetchedPrice / _1e18).toString();
-        const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
-        setPrice(Number(convertedFetchedPrice));
-        console.log(convertedFetchedPrice, "Fetched price");
-      } catch (error) {
-        console.error(error, "error");
-      } finally {
-        setHasPriceFetched(true);
-      }
-    };
+    // const getPrice = async () => {
+    //   try {
+    //     if (!provider || hasPriceFetched) return null;
+    //     const fetchedPrice = await priceFeedContract.getPrice();
+    //     // const convertedFetchedPrice = (fetchedPrice / _1e18).toString();
+    //     const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
+    //     setPrice(Number(convertedFetchedPrice));
+    //     console.log(convertedFetchedPrice, "Fetched price");
+    //   } catch (error) {
+    //     console.error(error, "error");
+    //   } finally {
+    //     setHasPriceFetched(true);
+    //   }
+    // };
 
     const getRecoveryModeStatus = async () => {
       const status: boolean = await troveManagerContract.checkRecoveryMode(
@@ -270,6 +275,9 @@ const Portfolio = () => {
       const totalColl = collFormatted * price;
       setStaticTotalCollateral(totalColl);
       setStaticTotalDebt(debtFormatted);
+      // PROGRESS BAR
+      totalSupply = 100;
+      suppliedAmount = Number(entireDebtAndColl.debt);
 
       //ltv
       const ltvValue = (debtFormatted * 100) / (totalColl || 1); // if collTotal is 0/null/undefined then it will be divided by 1
@@ -291,7 +299,7 @@ const Portfolio = () => {
       setHasGotStaticData(true);
     };
 
-    getPrice();
+    // getPrice();
     getRecoveryModeStatus();
     getLiquidationReserve();
     getStaticData();
@@ -300,7 +308,7 @@ const Portfolio = () => {
     getSystemLTV();
     getTroveStatus();
     getStakedValue();
-  }, []);
+  }, [walletClient]);
 
   useDebounce(
     () => {
@@ -463,27 +471,15 @@ const Portfolio = () => {
   };
 
   const divideBy = isRecoveryMode ? 1.5 : 1.1;
-
-  const availableToBorrow = price / divideBy - Number(entireDebtAndColl.debt);
+  console.log("nk1", price);
+  const availableToBorrow =
+    price / divideBy - Number(entireDebtAndColl.debt) || 0;
 
   const liquidation =
     divideBy *
     (Number(entireDebtAndColl.debt) / Number(entireDebtAndColl.coll));
   //   console.log("nk1", walletClient?.account.address);
-  const handlePercentageClick = (percentage: any) => {
-    const pow = Decimal.pow(10, 18);
-    const _1e18 = toBigInt(pow.toFixed());
-    const percentageDecimal = new Decimal(percentage).div(100);
-    const pusdBalanceNumber = parseFloat(fetchedPrice);
-    if (!isNaN(pusdBalanceNumber)) {
-      const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
-      const stakeFixed = maxStake.toFixed();
-      const stakeFixedConv = (toBigInt(stakeFixed) / _1e18).toString();
-      setUserInput(stakeFixedConv);
-    } else {
-      console.error("Not enough pusd to unstake:", pusdBalanceNumber);
-    }
-  };
+
   ////////////////////////
 
   const getTroveStatus = async () => {
@@ -495,7 +491,7 @@ const Portfolio = () => {
     const troveStatus =
       troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
     setTroveStatus(troveStatus);
-    console.log("nitu2");
+
     console.log("nitu3", { troveStatusBigInt, troveStatus });
   };
 
@@ -504,46 +500,148 @@ const Portfolio = () => {
   console.log({ troveStatus });
   return (
     <div>
-      {troveStatus === "ACTIVE" && (
-        <div className="flex flex-col gap-10 my-[2.5rem] ml-[2.5rem] mr-[2.5rem]">
-          {/* Hesading */}
-          <div className="flex  flex-row justify-between">
-            <div>
-              <p className="text-white text-sm mt-2 mb-4 ml-5">
-                Portfolio Value
-              </p>
+      <Layout>
+        {/* ACTIVE */}
+        {troveStatus === "ACTIVE" && (
+          <div className="container h-auto flex flex-col gap-10 my-[2.5rem] ml-[2.5rem] ">
+            {/* Hesading */}
+            <div className="flex  flex-row justify-between">
+              <div>
+                <p className="text-white text-sm mt-2 mb-4 ml-[1.25rem]">
+                  Portfolio Value
+                </p>
 
-              <span className="text-white text-2xl font-bold ml-5">
-                ${availableToBorrow} PUSD
-              </span>
-            </div>
+                <span className="text-white text-2xl font-bold ml-[1.25rem] flex justify-between">
+                  ${availableToBorrow} PUSD
+                </span>
+              </div>
 
-            <div className="w-2/3 h-2">
-              <Progress total={totalSupply} supplied={suppliedAmount} />
-              <h1 className="text-white text-sm ">
-                <div className="flex flex-row justify-between">
-                  {/*  const totalSupply = 100;
+              <div className="w-5/12 h-2 mr-10 ">
+                <Progress total={totalSupply} supplied={suppliedAmount} />
+                <h1 className="text-white text-sm ">
+                  <div className="flex flex-row justify-between">
+                    {/*  const totalSupply = 100;
   const suppliedAmount = 40; */}
-                  <div className="text-white flex flex-col">
-                    <span>Borrowed</span>
-                    <span>{suppliedAmount}</span>
+                    <div className="text-white flex flex-col">
+                      <span>Borrowed</span>
+                      <span>{Number(entireDebtAndColl.debt)} PUSD</span>
+                    </div>
+                    <div className="text-white flex flex-col">
+                      <span>Supplied</span>
+                      <span>{Number(entireDebtAndColl.coll)} BTC</span>
+                    </div>
                   </div>
-                  <div className="text-white flex flex-col">
-                    <span>Supplied</span>
-                    <span>{totalSupply - suppliedAmount}</span>
+                </h1>
+              </div>
+            </div>
+            {/* Boxes */}
+            <div className=" mt-10 flex flex-row justify-between gap-10 mx-auto">
+              {/* <div className="container mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10"> */}
+              {/* box1 */}
+              {/* w-[35rem] h-[23.6rem] */}
+              <div
+                className="flex-1 lg:w-[35rem] h-auto rounded-sm"
+                // className=" h-auto ml-[2.5rem] rounded-sm"
+                style={{ backgroundColor: "#3f3b2d" }}
+              >
+                {/* nav */}
+                <div
+                  className="  flex flex-row justify-between p-5"
+                  style={{ backgroundColor: "#3d3f37" }}
+                >
+                  <span className="text-white">TROVE</span>
+
+                  <button
+                    style={{ backgroundColor: "#f5d64e" }}
+                    className="h-10 px-8 bg-yellow-300 text-black font-bold"
+                  >
+                    Details
+                  </button>
+                </div>
+                {/* body */}
+                <div>
+                  <div
+                    className="flex flex-col place-items-center mt-2 "
+                    style={{ marginBottom: "2rem" }}
+                  >
+                    <Knob
+                      value={value}
+                      onChange={(e) => setValue(e.value)}
+                      size={100}
+                      // showValue={false}
+                      rangeColor="#78887f"
+                      valueColor="#3dde84"
+                      strokeWidth={10}
+                    />
+                    <span className="text-xs ml-[0.5rem]">{value}%</span>
+                    <span className="text-xs ml-[0.5rem]">/100%</span>
+                    <span className="text-xs ml-[0.5rem]">YOUR LTV</span>
+                  </div>
+                  <div className="text-white flex flex-row justify-between mx-[2.5rem]">
+                    {" "}
+                    <div className="flex flex-col">
+                      <span>Collateral</span>
+                      <span>{entireDebtAndColl.coll} BTC</span>
+                      <span className="text-xs">${price}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      {" "}
+                      <span>Debt</span>
+                      <span>{entireDebtAndColl.debt} PUSD</span>
+                    </div>
+                    <div className="flex flex-col">
+                      {" "}
+                      <span>Debt Ahead</span>
+                      <span>{entireDebtAndColl.pendingETHReward} PUSD</span>
+                    </div>
                   </div>
                 </div>
-              </h1>
+              </div>
+
+              {/* box2 */}
+              {/* w-[22rem] h-[23.6rem] */}
+              <div
+                // className=" h-auto  ml-[2.5rem] rounded-sm"
+                className=" lg:w-[22rem] h-auto rounded-sm"
+                style={{ backgroundColor: "#3f3b2d" }}
+              >
+                <div
+                  className="  flex flex-row justify-between p-5"
+                  style={{ backgroundColor: "#3d3f37" }}
+                >
+                  <span className="text-white">STABILITY POOL</span>
+
+                  <button
+                    style={{ backgroundColor: "#f5d64e" }}
+                    className="h-10 px-6 bg-yellow-300 text-black font-bold"
+                  >
+                    Details
+                  </button>
+                </div>
+                <div className="text-white ml-3">
+                  <div className="mb-[2rem] mt-2">
+                    <p>Deposited</p>
+                    <p>0 PUSD</p>
+                  </div>
+                  <div className="flex flex-row gap-10">
+                    <div className="flex flex-col">
+                      <span>Claimable</span>
+                      <span>{lr} PUSD</span>
+                    </div>
+                    <Image src={port2} alt="home" width={200} />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          {/* Boxes */}
+        )}
+        {/* INACTIVE */}
+        {troveStatus === "INACTIVE" && (
           <div className="mt-10 flex flex-row justify-between gap-10">
-            {/* box1 */}
             <div
               className="w-[35rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
               style={{ backgroundColor: "#3f3b2d" }}
             >
-              {/* nav */}
               <div
                 className="  flex flex-row justify-between p-5"
                 style={{ backgroundColor: "#3d3f37" }}
@@ -554,47 +652,16 @@ const Portfolio = () => {
                   style={{ backgroundColor: "#f5d64e" }}
                   className="h-10 px-8 bg-yellow-300 text-black font-bold"
                 >
-                  Details
+                  <Link href="/Borrow">OPEN TROVE</Link>
                 </button>
               </div>
-              {/* body */}
-              <div>
-                <div className="flex flex-col place-items-center mt-2 mb-8">
-                  <Knob
-                    value={value}
-                    onChange={(e) => setValue(e.value)}
-                    size={100}
-                    // showValue={false}
-                    rangeColor="#78887f"
-                    valueColor="#3dde84"
-                    strokeWidth={10}
-                  />
-                  <span className="text-xs ml-2">{value}%</span>
-                  <span className="text-xs ml-2">/100%</span>
-                  <span className="text-xs ml-2">YOUR LTV</span>
-                </div>
-                <div className="text-white flex flex-row justify-between mx-[2.5rem]">
-                  {" "}
-                  <div className="flex flex-col">
-                    <span>Collateral</span>
-                    <span>{entireDebtAndColl.coll} PUSD</span>
-                    <span className="text-xs">${price}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    {" "}
-                    <span>Debt</span>
-                    <span>{entireDebtAndColl.debt} PUSD</span>
-                  </div>
-                  <div className="flex flex-col">
-                    {" "}
-                    <span>Debt Ahead</span>
-                    <span>{entireDebtAndColl.pendingETHReward} PUSD</span>
-                  </div>
-                </div>
+              <div className="grid place-items-center">
+                <Image src={img1} alt="home" width={200} />
+                <p className="text-white text-center font-semibold text-lg mt-4">
+                  You don't have an Active Trove
+                </p>
               </div>
             </div>
-
-            {/* box2 */}
             <div
               className="w-[22rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
               style={{ backgroundColor: "#3f3b2d" }}
@@ -609,132 +676,73 @@ const Portfolio = () => {
                   style={{ backgroundColor: "#f5d64e" }}
                   className="h-10 px-6 bg-yellow-300 text-black font-bold"
                 >
-                  Details
+                  <Link href="/Stake">STAKE PUSD</Link>
                 </button>
               </div>
-              <div className="text-white ml-3">
-                <div className="mb-8">
-                  <p>Deposited</p>
-                  <p>0 PUSD</p>
-                </div>
-                <div className="flex flex-row gap-10">
-                  <div className="flex flex-col">
-                    <span>Claimable</span>
-                    <span>{lr} PUSD</span>
-                  </div>
-                  <Image src={port2} alt="home" width={200} />
-                </div>
+              <div className="grid place-items-center mt-[1rem]">
+                <Image src={port2} alt="home" width={200} />
+                <p className="text-white text-center font-semibold text-lg mt-4">
+                  You have not Staked
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {troveStatus === "INACTIVE" && (
-        <div className="mt-10 flex flex-row justify-between gap-10">
-          <div
-            className="w-[35rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
-            style={{ backgroundColor: "#3f3b2d" }}
-          >
+        )}
+        {!isConnected && (
+          <div className="mt-10 flex flex-row justify-between gap-10">
             <div
-              className="  flex flex-row justify-between p-5"
-              style={{ backgroundColor: "#3d3f37" }}
+              className="w-[35rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
+              style={{ backgroundColor: "#3f3b2d" }}
             >
-              <span className="text-white">TROVE</span>
-
-              <button
-                style={{ backgroundColor: "#f5d64e" }}
-                className="h-10 px-8 bg-yellow-300 text-black font-bold"
+              <div
+                className="  flex flex-row justify-between p-5"
+                style={{ backgroundColor: "#3d3f37" }}
               >
-                <Link href="/Borrow">OPEN TROVE</Link>
-              </button>
+                <span className="text-white">TROVE</span>
+
+                <button
+                  style={{ backgroundColor: "#f5d64e" }}
+                  className="h-10 px-8 bg-yellow-300 text-black font-bold"
+                >
+                  Connect Wallet
+                  {/* <Link href="/Borrow">OPEN TROVE</Link> */}
+                </button>
+              </div>
+              <div className="grid place-items-center">
+                <Image src={img1} alt="home" width={200} />
+                <p className="text-white text-center font-semibold text-lg mt-4">
+                  You don't have an Active Trove
+                </p>
+              </div>
             </div>
-            <div className="grid place-items-center">
-              <Image src={img1} alt="home" width={200} />
-              <p className="text-white text-center font-semibold text-lg mt-4">
-                You don't have an Active Trove
-              </p>
+            <div
+              className="w-[22rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
+              style={{ backgroundColor: "#3f3b2d" }}
+            >
+              <div
+                className="  flex flex-row justify-between p-5"
+                style={{ backgroundColor: "#3d3f37" }}
+              >
+                <span className="text-white">STABILITY POOL</span>
+
+                <button
+                  style={{ backgroundColor: "#f5d64e" }}
+                  className="h-10 px-4 bg-yellow-300 text-black font-bold"
+                >
+                  {/* <Link href="/Stake">STAKE PUSD</Link> */}
+                  Connect Wallet
+                </button>
+              </div>
+              <div className="grid place-items-center mt-[1rem]">
+                <Image src={port2} alt="home" width={200} />
+                <p className="text-white text-center font-semibold text-lg mt-4">
+                  You have not Staked
+                </p>
+              </div>
             </div>
           </div>
-          <div
-            className="w-[22rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
-            style={{ backgroundColor: "#3f3b2d" }}
-          >
-            <div
-              className="  flex flex-row justify-between p-5"
-              style={{ backgroundColor: "#3d3f37" }}
-            >
-              <span className="text-white">STABILITY POOL</span>
-
-              <button
-                style={{ backgroundColor: "#f5d64e" }}
-                className="h-10 px-6 bg-yellow-300 text-black font-bold"
-              >
-                <Link href="/Stake">STAKE PUSD</Link>
-              </button>
-            </div>
-            <div className="grid place-items-center">
-              <Image src={port2} alt="home" width={200} />
-              <p className="text-white text-center font-semibold text-lg mt-4">
-                You have not Staked
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-      {!troveStatus && (
-        <div className="mt-10 flex flex-row justify-between gap-10">
-          <div
-            className="w-[35rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
-            style={{ backgroundColor: "#3f3b2d" }}
-          >
-            <div
-              className="  flex flex-row justify-between p-5"
-              style={{ backgroundColor: "#3d3f37" }}
-            >
-              <span className="text-white">TROVE</span>
-
-              <button
-                style={{ backgroundColor: "#f5d64e" }}
-                className="h-10 px-8 bg-yellow-300 text-black font-bold"
-              >
-                Connect Wallet
-                {/* <Link href="/Borrow">OPEN TROVE</Link> */}
-              </button>
-            </div>
-            <div className="grid place-items-center">
-              <Image src={img1} alt="home" width={200} />
-              <p className="text-white text-center font-semibold text-lg mt-4">
-                You don't have an Active Trove
-              </p>
-            </div>
-          </div>
-          <div
-            className="w-[22rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
-            style={{ backgroundColor: "#3f3b2d" }}
-          >
-            <div
-              className="  flex flex-row justify-between p-5"
-              style={{ backgroundColor: "#3d3f37" }}
-            >
-              <span className="text-white">STABILITY POOL</span>
-
-              <button
-                style={{ backgroundColor: "#f5d64e" }}
-                className="h-10 px-4 bg-yellow-300 text-black font-bold"
-              >
-                {/* <Link href="/Stake">STAKE PUSD</Link> */}
-                Connect Wallet
-              </button>
-            </div>
-            <div className="grid place-items-center">
-              <Image src={port2} alt="home" width={200} />
-              <p className="text-white text-center font-semibold text-lg mt-4">
-                You have not Staked
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
+      </Layout>
     </div>
   );
 };

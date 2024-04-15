@@ -16,7 +16,10 @@ export default function Home() {
         </div>
 
         <div className="h-full" style={{ backgroundColor: "#272315" }}>
-          <div className="flex  gap-x-10">
+          <div
+            className="flex  gap-x-10"
+            style={{ backgroundColor: "#272315" }}
+          >
             <Portfolio />
           </div>
         </div>

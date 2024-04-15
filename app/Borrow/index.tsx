@@ -20,15 +20,18 @@ import { Input } from "@/components/ui/input";
 import { CustomConnectButton } from "@/components/connectBtn";
 import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
-import img2 from "../assets/images/Group 663.png";
-import img3 from "../assets/images/image 128.png";
-import img4 from "../assets/images/Group 666.png";
+import img2 from "../assets/images/Group 663.svg";
+// import img3 from "../assets/images/image 128.png";
+// import img4 from "../assets/images/Group 666.svg";
+import img3 from "../assets/images/Group 661.svg";
+import img4 from "../assets/images/Group 666.svg";
 import { Knob } from "primereact/knob";
 import { TabView, TabPanel } from "primereact/tabview";
 import Repay from "./Repay";
 import { CloseTrove } from "./Close";
 import { OpenTrove } from "./OpenTrove";
 import "../App.css";
+import Layout from "./layout";
 
 const Borrow = () => {
   const [userInputs, setUserInputs] = useState({
@@ -105,7 +108,7 @@ const Borrow = () => {
     priceFeedAbi,
     provider
   );
-  const { isConnected } = useAccount();
+  const { data: isConnected } = useWalletClient();
   const { toWei, toBigInt } = web3.utils;
   const pow20 = Decimal.pow(10, 20);
   const pow18 = Decimal.pow(10, 18);
@@ -126,7 +129,7 @@ const Borrow = () => {
       } = await troveManagerContract.getEntireDebtAndColl(
         walletClient?.account.address
       );
-      console.log(entireDebtAndColl.coll);
+      console.log("hi", entireDebtAndColl.coll);
 
       console.log("Collateral (raw):", coll); // Log the raw collateral value
       const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
@@ -194,20 +197,20 @@ const Borrow = () => {
       console.log({ lr, lrFormatted });
     };
 
-    const getPrice = async () => {
-      try {
-        if (!provider || hasPriceFetched) return null;
-        const fetchedPrice = await priceFeedContract.getPrice();
-        // const convertedFetchedPrice = (fetchedPrice / _1e18).toString();
-        const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
-        setPrice(Number(convertedFetchedPrice));
-        console.log(convertedFetchedPrice, "Fetched price");
-      } catch (error) {
-        console.error(error, "error");
-      } finally {
-        setHasPriceFetched(true);
-      }
-    };
+    // const getPrice = async () => {
+    //   try {
+    //     if (!provider || hasPriceFetched) return null;
+    //     const fetchedPrice = await priceFeedContract.getPrice();
+    //     // const convertedFetchedPrice = (fetchedPrice / _1e18).toString();
+    //     const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
+    //     setPrice(Number(convertedFetchedPrice));
+    //     console.log(convertedFetchedPrice, "Fetched price");
+    //   } catch (error) {
+    //     console.error(error, "error");
+    //   } finally {
+    //     setHasPriceFetched(true);
+    //   }
+    // };
 
     const getRecoveryModeStatus = async () => {
       const status: boolean = await troveManagerContract.checkRecoveryMode(
@@ -265,7 +268,7 @@ const Borrow = () => {
       setHasGotStaticData(true);
     };
 
-    getPrice();
+    // getPrice();
     getRecoveryModeStatus();
     getLiquidationReserve();
     getStaticData();
@@ -273,7 +276,7 @@ const Borrow = () => {
     fetchedData();
     getSystemLTV();
     getTroveStatus();
-  }, []);
+  }, [walletClient]);
 
   useDebounce(
     () => {
@@ -475,231 +478,155 @@ const Borrow = () => {
   console.log({ troveStatus });
   return (
     <div>
-      {troveStatus === "ACTIVE" && (
-        <div>
-          <div className="w-[70rem] h-[15rem] flex flex-row  mx-16 gap-10">
-            <div>
-              <p className="text-white text-base mt-8 mb-4">
-                Available to borrow
-              </p>
-              <div className="flex flex-row gap-2">
-                <Image src={img2} alt="home" />
-                <span className="text-white text-3xl">
-                  {availableToBorrow} PUSD
-                </span>
-              </div>
-              <div className="flex flex-row justify-between mt-5 gap-4">
-                <div
-                  className="flex flex-col text-white w-44 h-28 p-5"
-                  style={{ backgroundColor: "#343127" }}
-                >
-                  <span>Collateral</span>
-                  <span>{entireDebtAndColl.coll} PUSD</span>
-                  <span>${price}</span>
-                </div>
-                <div
-                  className="flex flex-col text-white  w-44 h-28 p-5"
-                  style={{ backgroundColor: "#343127" }}
-                >
-                  <span>Debt</span>
-                  <span>{entireDebtAndColl.debt} PUSD</span>
-                </div>{" "}
-              </div>
-            </div>
-            <div
-              className="w-[12rem] h-[12rem] mt-16"
-              style={{ backgroundColor: "#343127" }}
-            >
-              <div className="flex flex-col gap-8 text-white px-8 py-4">
-                <div className="flex flex-col">
-                  <span>System LTV</span>
-                  <span>{systemLTV}%</span>
-                </div>
-                <div className="flex flex-col ">
-                  <span>Trove Status</span>
-                  <div className="border border-lime-500 text-lime-500 justify-center items-center text-center mt-2">
-                    {troveStatus}{" "}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="w-[21.5rem] h-[12rem] mt-16 px-8 py-4"
-              style={{ backgroundColor: "#343127" }}
-            >
-              <div className="flex gap-16 text-white">
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-col">
-                    <span className="text-xs">Liquidation</span>
-                    <span>${liquidation} USD</span>
-                    <span>${fetchedPrice}</span>
-                  </div>
+      <Layout>
+        {/* Your content here */}
 
-                  <div className="flex flex-col">
-                    <span className="text-xs">Debt Ahead</span>
-                    <span>{entireDebtAndColl.pendingETHReward} PUSD</span>
-                  </div>
+        {/* ACTIVE */}
+        {troveStatus === "ACTIVE" && (
+          <div style={{ backgroundColor: "#272315" }}>
+            {/* w-[70rem]  */}
+            <div className="h-[15rem] flex flex-row  ml-16 gap-10">
+              <div>
+                <p className="text-white text-base mt-8 mb-4">
+                  Available to borrow
+                </p>
+                <div className="flex flex-row gap-2">
+                  <Image src={img2} alt="home" />
+                  <span className="text-white text-3xl">
+                    {availableToBorrow} PUSD
+                  </span>
                 </div>
-
-                <div className="flex flex-col">
-                  <span className="text-xs ml-2">loan to Value</span>
-                  <Knob
-                    value={value}
-                    onChange={(e) => setValue(e.value)}
-                    size={100}
-                    // showValue={false}
-                    rangeColor="#78887f"
-                    valueColor="#3dde84"
-                    strokeWidth={10}
-                  />
-                  <span className="text-xs ml-2">{value}%</span>
-                  <span className="text-xs ml-2">/100%</span>
-                  <span className="text-xs ml-2">YOUR LTV</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="" style={{ backgroundColor: "#272315" }}>
-            <div className="p-10 pt-24 flex gap-x-36">
-              <div className="  border border-yellow-800">
-                <TabView>
-                  <TabPanel
-                    className=" p-1 bg-yellow-400 text-xl  text-black "
-                    header="Borrow"
+                <div className="flex flex-row justify-between mt-5 gap-4">
+                  <div
+                    className="flex flex-col text-white  h-28 p-5"
+                    style={{ backgroundColor: "#343127" }}
                   >
-                    <div
-                      className="pb-10"
-                      style={{ backgroundColor: "#272315" }}
+                    <span>Collateral</span>
+                    <span>{Number(entireDebtAndColl.coll).toFixed(4)} BTC</span>
+                    <span>${price}</span>
+                  </div>
+                  <div
+                    className="flex flex-col text-white w-[10rem]  h-28 p-5"
+                    style={{ backgroundColor: "#343127" }}
+                  >
+                    <span>Debt</span>
+                    <span>{entireDebtAndColl.debt} PUSD</span>
+                  </div>{" "}
+                </div>
+              </div>
+              <div
+                className="w-[12rem] h-[12rem] mt-16"
+                style={{ backgroundColor: "#343127" }}
+              >
+                <div className="flex flex-col gap-8 text-white px-8 py-4">
+                  <div className="flex flex-col">
+                    <span>System LTV</span>
+                    <span>{systemLTV}%</span>
+                  </div>
+                  <div className="flex flex-col ">
+                    <span>Trove Status</span>
+                    <div className="border border-lime-500 text-lime-500 justify-center items-center text-center mt-2">
+                      {troveStatus}{" "}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="w-[21.5rem] h-[12rem] mt-16 px-8 py-4"
+                style={{ backgroundColor: "#343127" }}
+              >
+                <div className="flex gap-16 text-white">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex flex-col">
+                      <span className="text-xs">Liquidation</span>
+                      <span>${liquidation} USD</span>
+                      <span>${fetchedPrice}</span>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <span className="text-xs">Debt Ahead</span>
+                      <span>{entireDebtAndColl.pendingETHReward} PUSD</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <span className="text-xs ml-[0.5rem]">loan to Value</span>
+                    <Knob
+                      value={value}
+                      onChange={(e) => setValue(e.value)}
+                      size={100}
+                      // showValue={false}
+                      rangeColor="#78887f"
+                      valueColor="#3dde84"
+                      strokeWidth={10}
+                    />
+                    <span className="text-xs ml-[0.5rem]">{value}%</span>
+                    <span className="text-xs ml-[0.5rem]">/100%</span>
+                    <span className="text-xs ml-[0.5rem]">YOUR LTV</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="" style={{ backgroundColor: "#272315" }}>
+              <div className="p-10 pt-24 flex gap-x-36">
+                <div className="  border border-yellow-800">
+                  <TabView>
+                    <TabPanel
+                      className=" p-1 bg-yellow-400 text-xl  text-black "
+                      header="Borrow"
                     >
-                      <div className="container   flex flex-row justify-between gap-32">
-                        <div>
-                          <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
-                            <div className="relative">
-                              <Label
-                                htmlFor="items"
-                                className="text-white text-sm mb-2"
-                              >
-                                Deposit Collatoral
-                              </Label>
-                              <div
-                                className="flex items-center border border-yellow-300 "
-                                style={{ backgroundColor: "#3f3b2d" }}
-                              >
-                                <Image src={img3} alt="home" />{" "}
-                                <span className="text-white text-sm">BTC</span>
-                                <Input
-                                  id="items"
-                                  placeholder="0.000 BTC"
-                                  type="number"
-                                  value={userInputs.depositCollateral}
-                                  onChange={(e) => {
-                                    const newCollValue = e.target.value;
-                                    setUserInputs({
-                                      ...userInputs,
-                                      depositCollateral: newCollValue,
-                                    });
-                                  }}
-                                  className="w-[23.75rem] h-[4rem] text-white"
-                                  style={{ backgroundColor: "#3f3b2d" }}
-                                />
+                      <div
+                        className="pb-10"
+                        style={{ backgroundColor: "#272315" }}
+                      >
+                        <div className="container   flex flex-row justify-between gap-32">
+                          <div>
+                            <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
+                              <div className="relative">
+                                <Label
+                                  htmlFor="items"
+                                  className="text-white text-sm mb-2"
+                                >
+                                  Deposit Collatoral
+                                </Label>
                                 <div
-                                  className="w-8 text-white"
+                                  className="flex items-center border border-yellow-300 "
                                   style={{ backgroundColor: "#3f3b2d" }}
                                 >
-                                  ${totalCollateral}
-                                </div>
-                                {/* <Button className="w-10" size="sm" variant="outline">
+                                  <Image src={img3} alt="home" />{" "}
+                                  <span className="text-white text-sm">
+                                    BTC
+                                  </span>
+                                  <Input
+                                    id="items"
+                                    placeholder="0.000 BTC"
+                                    type="number"
+                                    value={userInputs.depositCollateral}
+                                    onChange={(e) => {
+                                      const newCollValue = e.target.value;
+                                      setUserInputs({
+                                        ...userInputs,
+                                        depositCollateral: newCollValue,
+                                      });
+                                    }}
+                                    className="w-[23.75rem] h-[4rem] text-white"
+                                    style={{ backgroundColor: "#3f3b2d" }}
+                                  />
+                                  <span
+                                    className="w-8 text-white"
+                                    style={{ backgroundColor: "#3f3b2d" }}
+                                  >
+                                    ${totalCollateral}
+                                  </span>
+                                  {/* <Button className="w-10" size="sm" variant="outline">
                     Max
                   </Button> */}
-                              </div>
-                              {/* <span className="text-white">
+                                </div>
+                                {/* <span className="text-white">
                           Available {Number(balanceData?.formatted).toFixed(3)}{" "}
                           {balanceData?.symbol}
                         </span> */}
-                            </div>
-                            <div className="flex flex-row justify-between">
-                              <span className="text-white mt-2">
-                                Available{" "}
-                                {Number(balanceData?.formatted).toFixed(3)}{" "}
-                                {/* {balanceData?.symbol} */}
-                              </span>
-                              <div className="flex gap-x-2 mt-2">
-                                <Button
-                                  className=" w-5 text-sm font-semibold border-2 border-yellow-900"
-                                  style={{
-                                    backgroundColor: "#3b351b",
-                                    borderRadius: "0",
-                                  }}
-                                  onClick={() => handlePercentageClick(25)}
-                                >
-                                  25%
-                                </Button>
-                                <Button
-                                  className="w-5 text-sm font-semibold border-2 border-yellow-900"
-                                  style={{
-                                    backgroundColor: "#3b351b",
-                                    borderRadius: "0",
-                                  }}
-                                  onClick={() => handlePercentageClick(50)}
-                                >
-                                  50%
-                                </Button>
-                                <Button
-                                  className="w-5 text-sm font-semibold border-2 border-yellow-900"
-                                  style={{
-                                    backgroundColor: "#3b351b",
-                                    borderRadius: "0",
-                                  }}
-                                  onClick={() => handlePercentageClick(75)}
-                                >
-                                  75%
-                                </Button>
-                                <Button
-                                  className="w-5 text-sm font-semibold border-2 border-yellow-900"
-                                  style={{
-                                    backgroundColor: "#3b351b",
-                                    borderRadius: "0",
-                                  }}
-                                  onClick={() => handlePercentageClick(100)}
-                                >
-                                  100%
-                                </Button>
                               </div>
-                            </div>
-
-                            <div className="relative">
-                              <Label
-                                htmlFor="quantity"
-                                className="text-white text-sm mb-2"
-                              >
-                                Borrow
-                              </Label>
-                              <div
-                                className="flex items-center border border-yellow-300 "
-                                style={{ backgroundColor: "#3f3b2d" }}
-                              >
-                                <Image src={img4} alt="home" />{" "}
-                                <span className="text-white text-sm">PSUD</span>
-                                <Input
-                                  id="quantity"
-                                  placeholder="0.00 PUSD"
-                                  type="number"
-                                  value={userInputs.borrow}
-                                  onChange={(e) => {
-                                    const newBorrowValue = e.target.value;
-                                    setUserInputs({
-                                      ...userInputs,
-                                      borrow: newBorrowValue,
-                                    });
-                                  }}
-                                  className="w-[23.75rem] h-[4rem] text-white"
-                                  style={{ backgroundColor: "#3f3b2d" }}
-                                />
-                                {/* <span className="text-white">0</span> */}
-                              </div>
-                              {/* <div className="text-white mt-2">
-                                Available {availableBorrow}
-                              </div> */}
                               <div className="flex flex-row justify-between">
                                 <span className="text-white mt-2">
                                   Available{" "}
@@ -749,382 +676,357 @@ const Borrow = () => {
                                   </Button>
                                 </div>
                               </div>
-                              <Button
-                                onClick={() =>
-                                  handleConfirmClick(
-                                    userInputs.borrow,
-                                    userInputs.depositCollateral
-                                  )
-                                }
-                                className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold"
-                              >
-                                UPDATE TROVE
-                              </Button>
+
+                              <div className="relative">
+                                <Label
+                                  htmlFor="quantity"
+                                  className="text-white text-sm mb-2"
+                                >
+                                  Borrow
+                                </Label>
+                                <div
+                                  className="flex items-center border border-yellow-300 "
+                                  style={{ backgroundColor: "#3f3b2d" }}
+                                >
+                                  <Image src={img4} alt="home" />{" "}
+                                  <span className="text-white text-sm">
+                                    PSUD
+                                  </span>
+                                  <Input
+                                    id="quantity"
+                                    placeholder="0.00 PUSD"
+                                    type="number"
+                                    value={userInputs.borrow}
+                                    onChange={(e) => {
+                                      const newBorrowValue = e.target.value;
+                                      setUserInputs({
+                                        ...userInputs,
+                                        borrow: newBorrowValue,
+                                      });
+                                    }}
+                                    className="w-[23.75rem] h-[4rem] text-white"
+                                    style={{ backgroundColor: "#3f3b2d" }}
+                                  />
+                                  {/* <span className="text-white">0</span> */}
+                                </div>
+                                {/* <div className="text-white mt-2">
+                                Available {availableBorrow}
+                              </div> */}
+                                <div className="flex flex-row justify-between">
+                                  <span className="text-white mt-2">
+                                    Available {Number(availableToBorrow)}{" "}
+                                    {/* {balanceData?.symbol} */}
+                                  </span>
+                                  <div className="flex gap-x-2 mt-2">
+                                    <Button
+                                      className=" w-5 text-sm font-semibold border-2 border-yellow-900"
+                                      style={{
+                                        backgroundColor: "#3b351b",
+                                        borderRadius: "0",
+                                      }}
+                                      onClick={() => handlePercentageClick(25)}
+                                    >
+                                      25%
+                                    </Button>
+                                    <Button
+                                      className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                      style={{
+                                        backgroundColor: "#3b351b",
+                                        borderRadius: "0",
+                                      }}
+                                      onClick={() => handlePercentageClick(50)}
+                                    >
+                                      50%
+                                    </Button>
+                                    <Button
+                                      className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                      style={{
+                                        backgroundColor: "#3b351b",
+                                        borderRadius: "0",
+                                      }}
+                                      onClick={() => handlePercentageClick(75)}
+                                    >
+                                      75%
+                                    </Button>
+                                    <Button
+                                      className="w-5 text-sm font-semibold border-2 border-yellow-900"
+                                      style={{
+                                        backgroundColor: "#3b351b",
+                                        borderRadius: "0",
+                                      }}
+                                      onClick={() => handlePercentageClick(100)}
+                                    >
+                                      100%
+                                    </Button>
+                                  </div>
+                                </div>
+                                <Button
+                                  onClick={() =>
+                                    handleConfirmClick(
+                                      userInputs.borrow,
+                                      userInputs.depositCollateral
+                                    )
+                                  }
+                                  className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold"
+                                >
+                                  UPDATE TROVE
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            className=" w-auto p-10  mt-10 text-sm"
+                            style={{ backgroundColor: "#3f3b2d" }}
+                          >
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Loan-To-Value</span>
+
+                              <span>{Number(staticLtv).toFixed(2)} %</span>
+                            </div>
+
+                            <div className="flex  gap-40 text-white mb-2 justify-between">
+                              <span>Liq. Reserve</span>
+
+                              <span>{Number(lr).toFixed(2)} PUSD</span>
+                            </div>
+                            <div className="flex gap-20 text-white mb-2 justify-between">
+                              <span>Liquidation Price</span>
+
+                              <span>
+                                {Number(staticLiquidationPrice).toFixed(2)} PUSD
+                              </span>
+                            </div>
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Borrowing Fee</span>
+                              <span>
+                                {Number(staticBorrowingFee).toFixed(2)} PUSD
+                              </span>
+                            </div>
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Total Debt</span>
+                              <span>
+                                {Number(staticTotalDebt).toFixed(2)} PUSD
+                              </span>
+                            </div>
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Total Collateral</span>
+                              <span>
+                                {Number(staticTotalCollateral).toFixed(4)} BTC
+                              </span>
+                            </div>
+                            <div className="w-50 border mb-2 "></div>
+
+                            {/* DYANIC */}
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Loan-To-Value</span>
+                              <span>{Number(ltv).toFixed(2)} %</span>
+                            </div>
+
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Liq. Reserve</span>
+                              <span>{Number(lr).toFixed(2)} PUSD</span>
+                            </div>
+                            <div className="flex gap-20 text-white mb-2 justify-between">
+                              <span>Liquidation Price</span>
+                              <span>
+                                {Number(liquidationPrice).toFixed(2)} PUSD
+                              </span>
+                            </div>
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Borrowing Fee</span>
+                              <span>
+                                {Number(borrowingFee).toFixed(2)} PUSD
+                              </span>
+
+                              {/* <span>{borrowingFee} PUSD</span> */}
+                            </div>
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Total Debt</span>
+                              <span>{Number(totalDebt).toFixed(2)} PUSD</span>
+
+                              {/* <span>{totalDebt} PUSD</span> */}
+                            </div>
+                            <div className="flex gap-40 text-white mb-2 justify-between">
+                              <span>Total Collateral</span>
+                              {/* <span>{totalCollateral} BTC</span> */}
+                              <span>
+                                {Number(totalCollateral).toFixed(4)} BTC
+                              </span>
                             </div>
                           </div>
                         </div>
-                        <div
-                          className=" w-auto p-10  mt-10 text-sm"
-                          style={{ backgroundColor: "#3f3b2d" }}
-                        >
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Loan-To-Value</span>
-                            <span>{staticLtv} %</span>
-                          </div>
-
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Liq. Reserve</span>
-                            <span>{lr} PUSD</span>
-                          </div>
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Liquidation Price</span>
-                            <span>{staticLiquidationPrice} PUSD</span>
-                          </div>
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Borrowing Fee</span>
-                            <span>{staticBorrowingFee} PUSD</span>
-                          </div>
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Total Debt</span>
-                            <span>{staticTotalDebt} PUSD</span>
-                          </div>
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Total Collateral</span>
-                            <span>{staticTotalCollateral} PUSD</span>
-                          </div>
-                          <div className="w-50 border mb-2 "></div>
-
-                          {/* ////////////////////////// */}
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Loan-To-Value</span>
-                            <span>{ltv} %</span>
-                          </div>
-
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Liq. Reserve</span>
-                            <span>{lr} PUSD</span>
-                          </div>
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Liquidation Price</span>
-                            <span>{liquidationPrice} PUSD</span>
-                          </div>
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Borrowing Fee</span>
-                            <span>{borrowingFee} PUSD</span>
-                          </div>
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Total Debt</span>
-                            <span>{totalDebt} PUSD</span>
-                          </div>
-                          <div className="flex gap-40 text-white mb-2">
-                            <span>Total Collateral</span>
-                            <span>{totalCollateral} PUSD</span>
-                          </div>
-                        </div>
                       </div>
-                    </div>
-                  </TabPanel>
-                  <TabPanel
-                    className="p-1 bg-yellow-400 text-xl text-black"
-                    header="Repay"
-                  >
-                    <div
-                      className="w-full h-full pb-10"
-                      style={{ backgroundColor: "#272315" }}
+                    </TabPanel>
+                    <TabPanel
+                      className="p-1 bg-yellow-400 text-xl text-black"
+                      header="Repay"
                     >
-                      <Repay />
-                    </div>
-                  </TabPanel>
-                  <TabPanel
-                    className="p-1 bg-yellow-400 text-xl text-black"
-                    header="Close"
-                  >
-                    <div
-                      className="w-full h-full"
-                      style={{ backgroundColor: "#272315" }}
+                      <div
+                        className="w-full h-full pb-10"
+                        style={{ backgroundColor: "#272315" }}
+                      >
+                        <Repay />
+                      </div>
+                    </TabPanel>
+                    <TabPanel
+                      className="p-1 bg-yellow-400 text-xl text-black"
+                      header="Close"
                     >
-                      <CloseTrove />
-                    </div>
-                  </TabPanel>
-                </TabView>
+                      <div
+                        className="w-full h-full"
+                        style={{ backgroundColor: "#272315" }}
+                      >
+                        <CloseTrove />
+                      </div>
+                    </TabPanel>
+                  </TabView>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {troveStatus === "INACTIVE" && (
-        // <>
-        //   <div className="w-full  " style={{ backgroundColor: "#3f3b2d" }}>
-        //     <div className=" mx-10 my-10 flex flex-row m-4 gap-12">
-        //       <div className="h-[192px]">
-        //         <Image src={img1} alt="home" />
-        //       </div>
+        )}
+        {troveStatus === "INACTIVE" && (
+          <div className="w-full h-auto" style={{ backgroundColor: "#272315" }}>
+            <OpenTrove />
+          </div>
+        )}
 
-        //       <div className="mt-10">
-        //         <p className="text-white text-center text-2xl font-bold mb-5">
-        //           You don't have an existing trove
-        //         </p>
-        //         <p className="text-yellow-300 text-left text-xl mb-2">
-        //           Open a zero interest trove
-        //         </p>
-        //         <p className="text-white text-left text-base">
-        //           Borrow against BTCs interest free
-        //         </p>
-        //       </div>
-        //     </div>
-        //   </div>
+        {!isConnected && (
+          <>
+            <div
+              className="w-screen max-w-screen-lg ml-[4rem] "
+              style={{ backgroundColor: "#3f3b2d" }}
+            >
+              <div className=" mx-10 my-10 flex flex-row m-4 gap-12">
+                <div className="h-[192px]">
+                  <Image src={img1} alt="home" />
+                </div>
 
-        //   <div className="container mx-10 my-10 flex flex-row justify-between gap-10">
-        //     <div>
-        //       <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
-        //         <div className="relative">
-        //           <Label htmlFor="items" className="text-white ">
-        //             Deposit Collatoral
-        //           </Label>
-        //           <div
-        //             className="flex items-center border border-yellow-300 "
-        //             style={{ backgroundColor: "#3f3b2d" }}
-        //           >
-        //             <Input
-        //               id="items"
-        //               placeholder="0.000 BTC"
-        //               type="number"
-        //               value={userInputs.depositCollateral}
-        //               onChange={(e) => {
-        //                 const newCollValue = e.target.value;
-        //                 setUserInputs({
-        //                   ...userInputs,
-        //                   depositCollateral: newCollValue,
-        //                 });
-        //               }}
-        //               className="w-[23.75rem] h-[4rem] text-white"
-        //               style={{ backgroundColor: "#3f3b2d" }}
-        //             />
-        //             <div style={{ backgroundColor: "#3f3b2d" }}>
-        //               {totalCollateral}
-        //             </div>
-        //             {/* <Button className="w-10" size="sm" variant="outline">
-        // 			Max
-        // 		</Button> */}
-        //           </div>
-        //           {/* <span className="text-white">
-        //             Available {Number(balanceData?.formatted).toFixed(3)}{" "}
-        //             {balanceData?.symbol}
-        //           </span> */}
-        //         </div>
-        //         <span className="text-white">
-        //           Available {Number(balanceData?.formatted).toFixed(3)}{" "}
-        //           {balanceData?.symbol}
-        //         </span>
-        //         <div className="relative">
-        //           <Label htmlFor="quantity" className="text-white">
-        //             Borrow
-        //           </Label>
-        //           <div
-        //             className="flex items-center border border-yellow-300 "
-        //             style={{ backgroundColor: "#3f3b2d" }}
-        //           >
-        //             <Input
-        //               id="quantity"
-        //               placeholder="0.00 PUSD"
-        //               type="number"
-        //               value={userInputs.borrow}
-        //               onChange={(e) => {
-        //                 const newBorrowValue = e.target.value;
-        //                 setUserInputs({
-        //                   ...userInputs,
-        //                   borrow: newBorrowValue,
-        //                 });
-        //               }}
-        //               className="w-[23.75rem] h-[4rem] text-white"
-        //               style={{ backgroundColor: "#3f3b2d" }}
-        //             />
-        //             {/* <span className="text-white">0</span> */}
-        //           </div>
-        //           <div className="text-white">Available {availableBorrow}</div>
-        //           <Button
-        //             onClick={() =>
-        //               handleConfirmClick(
-        //                 userInputs.borrow,
-        //                 userInputs.depositCollateral
-        //               )
-        //             }
-        //             className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold"
-        //           >
-        //             OPEN TROVE
-        //           </Button>
-        //         </div>
-        //       </div>
-        //     </div>
-        //     <div
-        //       className="h-[16rem] w-auto p-10  mt-10"
-        //       style={{ backgroundColor: "#3f3b2d" }}
-        //     >
-        //       <div className="flex gap-40 text-white ">
-        //         <span>Loan-To-Value</span>
-        //         <span>{ltv} %</span>
-        //       </div>
-
-        //       <div className="flex gap-40 text-white">
-        //         <span>Liq. Reserve</span>
-        //         <span>{lr} PUSD</span>
-        //       </div>
-        //       <div className="flex gap-40 text-white">
-        //         <span>Liquidation Price</span>
-        //         <span>{liquidationPrice} PUSD</span>
-        //       </div>
-        //       <div className="flex gap-40 text-white">
-        //         <span>Borrowing Fee</span>
-        //         <span>{borrowingFee} PUSD</span>
-        //       </div>
-        //       <div className="flex gap-40 text-white">
-        //         <span>Total Debt</span>
-        //         <span>{totalDebt} PUSD</span>
-        //       </div>
-        //       <div className="flex gap-40 text-white">
-        //         <span>Total Collateral</span>
-        //         <span>{totalCollateral} PUSD</span>
-        //       </div>
-        //     </div>
-        //   </div>
-        // </>
-        <div className="w-full h-auto" style={{ backgroundColor: "#272315" }}>
-          <OpenTrove />
-        </div>
-      )}
-      {troveStatus === "" && (
-        <>
-          <div
-            className="w-screen max-w-screen-lg ml-[4rem] "
-            style={{ backgroundColor: "#3f3b2d" }}
-          >
-            <div className=" mx-10 my-10 flex flex-row m-4 gap-12">
-              <div className="h-[192px]">
-                <Image src={img1} alt="home" />
+                <div className="mt-4">
+                  <p className="text-white text-center text-2xl font-bold mb-[1.25rem]">
+                    You don't have an existing trove
+                  </p>
+                  <p className="text-yellow-300 text-left text-xl mb-2">
+                    Open a zero interest trove
+                  </p>
+                  <p className="text-white text-left text-base">
+                    Borrow against BTCs interest free
+                  </p>
+                </div>
               </div>
-
+            </div>
+            <div className="container mx-10 my-10 flex flex-row justify-between">
               <div>
-                <p className="text-white text-center text-2xl font-bold mb-5">
-                  You don't have an existing trove
-                </p>
-                <p className="text-yellow-300 text-left text-xl mb-2">
-                  Open a zero interest trove
-                </p>
-                <p className="text-white text-left text-base">
-                  Borrow against BTCs interest free
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="container mx-10 my-10 flex flex-row justify-between">
-            <div>
-              <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
-                <div className="relative"></div>
-                <div className="relative">
-                  <Label htmlFor="items" className="text-white ">
-                    Deposit Collatoral
-                  </Label>
-                  <div
-                    className="flex items-center border border-yellow-300 "
-                    style={{ backgroundColor: "#3f3b2d" }}
-                  >
-                    <Input
-                      id="items"
-                      placeholder="0.000 BTC"
-                      type="number"
-                      value={userInputs.depositCollateral}
-                      onChange={(e) => {
-                        const newCollValue = e.target.value;
-                        setUserInputs({
-                          ...userInputs,
-                          depositCollateral: newCollValue,
-                        });
-                      }}
-                      className="w-[23.75rem] h-[4rem] text-white"
+                <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
+                  <div className="relative"></div>
+                  <div className="relative">
+                    <Label htmlFor="items" className="text-white ">
+                      Deposit Collatoral
+                    </Label>
+                    <div
+                      className="flex items-center border border-yellow-300 "
                       style={{ backgroundColor: "#3f3b2d" }}
-                    />
-                    <div style={{ backgroundColor: "#3f3b2d" }}>
-                      {totalCollateral}
-                    </div>
-                    {/* <Button className="w-10" size="sm" variant="outline">
+                    >
+                      <Input
+                        id="items"
+                        placeholder="0.000 BTC"
+                        type="number"
+                        value={userInputs.depositCollateral}
+                        onChange={(e) => {
+                          const newCollValue = e.target.value;
+                          setUserInputs({
+                            ...userInputs,
+                            depositCollateral: newCollValue,
+                          });
+                        }}
+                        className="w-[23.75rem] h-[4rem] text-white"
+                        style={{ backgroundColor: "#3f3b2d" }}
+                      />
+                      <span style={{ backgroundColor: "#3f3b2d" }}>
+                        {totalCollateral}
+                      </span>
+                      {/* <Button className="w-10" size="sm" variant="outline">
                           Max
                       </Button> */}
-                  </div>
-                  {/* <span className="text-white">
+                    </div>
+                    {/* <span className="text-white">
                   Available {Number(balanceData?.formatted).toFixed(3)}{" "}
                   {balanceData?.symbol}
                 </span> */}
-                </div>
-                <span className="text-white">
-                  Available {Number(balanceData?.formatted).toFixed(3)}{" "}
-                  {balanceData?.symbol}
-                </span>
-                <div className="relative">
-                  <Label htmlFor="quantity" className="text-white">
-                    Borrow
-                  </Label>
-                  <div
-                    className="flex items-center border border-yellow-300 "
-                    style={{ backgroundColor: "#3f3b2d" }}
-                  >
-                    <Input
-                      id="quantity"
-                      placeholder="0.00 PUSD"
-                      type="number"
-                      value={userInputs.borrow}
-                      onChange={(e) => {
-                        const newBorrowValue = e.target.value;
-                        setUserInputs({
-                          ...userInputs,
-                          borrow: newBorrowValue,
-                        });
-                      }}
-                      className="w-[23.75rem] h-[4rem] text-white"
-                      style={{ backgroundColor: "#3f3b2d" }}
-                    />
-                    {/* <span className="text-white">0</span> */}
                   </div>
-                  <div className="text-white">Available {availableBorrow}</div>
-                  <Button className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold">
-                    Connect Wallet
-                    {/* <CustomConnectButton /> */}
-                  </Button>
+                  <span className="text-white">
+                    Available {Number(balanceData?.formatted).toFixed(3)}{" "}
+                    {balanceData?.symbol}
+                  </span>
+                  <div className="relative">
+                    <Label htmlFor="quantity" className="text-white">
+                      Borrow
+                    </Label>
+                    <div
+                      className="flex items-center border border-yellow-300 "
+                      style={{ backgroundColor: "#3f3b2d" }}
+                    >
+                      <Input
+                        id="quantity"
+                        placeholder="0.00 PUSD"
+                        type="number"
+                        value={userInputs.borrow}
+                        onChange={(e) => {
+                          const newBorrowValue = e.target.value;
+                          setUserInputs({
+                            ...userInputs,
+                            borrow: newBorrowValue,
+                          });
+                        }}
+                        className="w-[23.75rem] h-[4rem] text-white"
+                        style={{ backgroundColor: "#3f3b2d" }}
+                      />
+                      {/* <span className="text-white">0</span> */}
+                    </div>
+                    <div className="text-white">
+                      Available {availableBorrow}
+                    </div>
+                    <Button className="mt-5 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold">
+                      Connect Wallet
+                      {/* <CustomConnectButton /> */}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="h-[16rem] w-auto p-10  mt-10"
+                style={{ backgroundColor: "#3f3b2d" }}
+              >
+                <div className="flex gap-40 text-white justify-between">
+                  <span>Loan-To-Value</span>
+                  <span>{Number(ltv).toFixed(2)} %</span>
+                </div>
+
+                <div className="flex gap-40 text-white justify-between">
+                  <span>Liq. Reserve</span>
+                  <span>{Number(lr).toFixed(2)} PUSD</span>
+                </div>
+                <div className="flex gap-20 text-white justify-between">
+                  <span>Liquidation Price</span>
+                  <span>{Number(liquidationPrice).toFixed(2)} PUSD</span>
+                </div>
+                <div className="flex gap-40 text-white justify-between">
+                  <span>Borrowing Fee</span>
+                  <span>{Number(borrowingFee).toFixed(2)} PUSD</span>
+                </div>
+                <div className="flex gap-40 text-white justify-between">
+                  <span>Total Debt</span>
+                  <span>{Number(totalDebt).toFixed(2)}PUSD</span>
+                </div>
+                <div className="flex gap-40 text-white justify-between">
+                  <span>Total Collateral</span>
+                  <span>{Number(totalCollateral).toFixed(4)}BTC</span>
                 </div>
               </div>
             </div>
-            <div
-              className="h-[16rem] w-auto p-10  mt-10"
-              style={{ backgroundColor: "#3f3b2d" }}
-            >
-              <div className="flex gap-40 text-white ">
-                <span>Loan-To-Value</span>
-                <span>{ltv} %</span>
-              </div>
-
-              <div className="flex gap-40 text-white">
-                <span>Liq. Reserve</span>
-                <span>{lr} PUSD</span>
-              </div>
-              <div className="flex gap-40 text-white">
-                <span>Liquidation Price</span>
-                <span>{liquidationPrice} PUSD</span>
-              </div>
-              <div className="flex gap-40 text-white">
-                <span>Borrowing Fee</span>
-                <span>{borrowingFee} PUSD</span>
-              </div>
-              <div className="flex gap-40 text-white">
-                <span>Total Debt</span>
-                <span>{totalDebt} PUSD</span>
-              </div>
-              <div className="flex gap-40 text-white">
-                <span>Total Collateral</span>
-                <span>{totalCollateral} PUSD</span>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </Layout>
     </div>
   );
 };
