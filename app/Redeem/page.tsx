@@ -16,9 +16,7 @@ export default function Home() {
         </div>
 
         <div className="h-full" style={{ backgroundColor: "#272315" }}>
-          <div className="flex mt-40 gap-x-10">
-            <Redeem />
-          </div>
+          <div className="flex mt-40 gap-x-10"></div>
         </div>
       </div>
     </div>
