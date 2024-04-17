@@ -1,13 +1,8 @@
 "use client";
 import React from "react";
-import { TabsDemo } from "@/components/sidebar";
-import { CardDemo } from "@/components/cards";
+
 import NavBar from "@/components/navbar";
-import { CenterBar } from "@/components/centerBar";
-import { TableDemo } from "@/components/TableDemo";
-import { PATIENTS, PATIENTS_HEADER } from "../components/data";
-import BottomBar from "@/components/BottomBar";
-import { CalendarDemo } from "@/components/appointmentPage";
+
 import Redeem from "./Redeem";
 
 export default function Home() {

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { TabsDemo } from "@/components/sidebar";
+// import { TabsDemo } from "@/components/sidebar";
 import { CardDemo } from "@/components/cards";
 import NavBar from "@/components/navbar";
 import { CenterBar } from "@/components/centerBar";
