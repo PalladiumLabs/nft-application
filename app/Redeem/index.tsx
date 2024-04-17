@@ -1,4 +1,5 @@
 "use client";
+
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,22 +103,22 @@ export default function Redeem() {
           alt="home"
           className="overflow-hidden"
         />
-        <div className="text-amber-400 text-2xl md:text-6xl font-bold font-mono mt-4 md:mt-[2rem]">
+        <div className="text-amber-400 text-2xl md:text-6xl font-bold title-text mt-4 md:mt-[2rem]">
           GENESIS NFT
         </div>
         <div className="mt-4 ">
-          <span className="text-white text-lg mt-4 font-sans">
+          <span className="text-white text-lg mt-4 body-text">
             Collect the very first Circuit Breaker NFT and join the elite OGs of
             Palladium
           </span>
         </div>
-        <div className="text-amber-400 text-xl lg:text-3xl font-bold font-mono mt-[2rem] md:mt-[4rem]">
-          MINTING IS NOW AVAILABLE
+        <div className="text-amber-400 text-xl lg:text-3xl font-bold mt-[2rem] md:mt-[4rem] title-text">
+          MINTING IS AVAILABLE NOW
         </div>
         {isConnected ? (
           mint.toString() === "0" ? (
             <button
-              className={`w-full md:w-[15rem] bg-amber-400 text-black text-lg font-bold font-mono mt-4 md:mt-[2rem] px-4 py-2 ${
+              className={`w-full md:w-[15rem] bg-amber-400 text-black text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 ${
                 isPending ? "opacity-50" : ""
               }`}
               disabled={isPending}
@@ -127,7 +128,7 @@ export default function Redeem() {
               {isPending ? "Minting..." : "MINT NOW"}
             </button>
           ) : (
-            <button className="w-full md:w-[15rem] bg-amber-400 text-black text-lg font-bold font-mono mt-4 md:mt-[2rem] px-4 py-2">
+            <button className="w-full md:w-[15rem] bg-amber-400 text-black text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2">
               ALREADY MINTED
             </button>
           )

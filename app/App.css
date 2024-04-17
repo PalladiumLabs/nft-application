@@ -1,3 +1,27 @@
+@font-face {
+  /* font-family: 'Inter';
+  src: local('Inter'),
+       url('./fonts/Inter/Inter-Regular.ttf') format('ttf') */
+  font-family: "Montech";
+  src: local("Montech"), url(./src/config/fonts/Montech/MONTECHV01-Bold.otf);
+}
+
+@font-face {
+  /* font-family: 'Inter';
+  src: local('Inter'),
+       url('./fonts/Inter/Inter-Regular.ttf') format('ttf') */
+  font-family: "Montserrat";
+  src: local("Montserrat"), url(./src/config/fonts/Montserrat-VariableFont_wght.ttf);
+}
+
+.title-text {
+  font-family: "Montech";
+}
+
+.body-text {
+  font-family: "Montserrat";
+}
+
 :root {
   --body_background: white;
   --manage: rgb(235, 223, 255);
@@ -35,7 +59,6 @@ body {
 }
 
 * {
-  font-family: Inter;
   /* background-color: var(--body_background); */
   /* background-color: #000000;
   color: white; */
