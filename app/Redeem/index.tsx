@@ -25,46 +25,40 @@ import gif from "../assets/images/NFT.gif";
 import { CustomConnectButton } from "@/components/connectBtn";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
+import { Modal } from "react-responsive-modal";
+import "react-responsive-modal/styles.css";
 
 export default function Redeem() {
   const { data: walletClient } = useWalletClient();
   const { address, isConnected } = useAccount();
   const [mint, setMint] = useState("0");
   const [newMint, setNewMint] = useState();
-  // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  // const handleResize = () => {
-  //   setWindowWidth(window.innerWidth);
-  // };
-  // useEffect(() => {
-  //   window.addEventListener("resize", handleResize);
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-  const lgBreakpoint = 1024;
+
+  const router = useRouter();
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-  console.log("address", address);
+
   const nftContract = getContract(
     "0xD8C448dD8A4785835da7af461ebB015dD83d4a12",
     nftAbi,
     provider
   );
   const mintStatus = async () => {
-    console.log(
-      walletClient?.account?.address,
-      "walletClient?.account?.address"
-    );
+    if (!address) {
+      setMint("0"); // Set mint status to "0" if address is not available
+      return;
+    }
     const minted = await nftContract?.idOf(address);
-    console.log(mint, "mint1");
+
     setMint(minted.toString());
-    console.log(mint, "mint2");
   };
 
   const { data, writeContract, isPending } = useWriteContract();
 
   const handleMint = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
     try {
       writeContract({
         abi: nftAbi,
@@ -72,6 +66,9 @@ export default function Redeem() {
         functionName: "safeMint",
         args: [address],
       });
+
+      router.refresh();
+      console.log("refreshed");
     } catch (error) {
       console.error("An error occurred", error);
     }
@@ -79,36 +76,25 @@ export default function Redeem() {
   useEffect(() => {
     mintStatus();
   }, [address, mint]);
-  // mint the useEffect mai
-  const handleAlreadyMinted = () => {
-    // For demonstration purposes, showing a static message and a GIF
-    console.log("You have already minted this NFT.");
-    const apiResponse = mint.toString();
-    const gifUrl = "../assets/images/NFT.gif";
 
-    toast(
-      <div
-        className="w-[500] h-[500]  flex flex-row justify-center p-2"
-        style={{ backgroundColor: "#272315" }}
-      >
-        <p className="text-amber-400  font-mono font-2xl ">
-          Token ID:{apiResponse}
-        </p>
-        <Image src={gif} width={100} height={150} alt="home" />
-      </div>,
-      {
-        autoClose: false, // Keep the notification open until manually closed
-      }
-    );
-  };
+  // mint the useEffect mai
+  const apiResponse = mint.toString();
+
   return (
-    <div className="flex flex-row justify-center">
-      {/* {windowWidth >= lgBreakpoint ? ( // Check if screen size is larger than or equal to lg breakpoint
-        <> */}
-      <div className="mt-[4rem] mx-[4rem]">
-        <Image src={img} width={600} height={450} alt="home" />
+    <div className="flex flex-col md:flex-row items-center justify-center max-sm:px-5">
+      <div className="md:mr-8 md:mt-[4rem]">
+        {mint.toString() === "0" ? (
+          <Image src={img} width={600} height={450} alt="home" />
+        ) : (
+          <div className=" h-[30rem] ">
+            <Image src={gif} alt="home" />
+            <p className="text-amber-400 font-mono text-2xl font-extrabold text-center mt-2">
+              Token ID:{apiResponse}
+            </p>
+          </div>
+        )}
       </div>
-      <div className="mt-[4rem] ">
+      <div className="mt-4 md:mt-[4rem]">
         <Image
           src={img1}
           width={600}
@@ -116,48 +102,42 @@ export default function Redeem() {
           alt="home"
           className="overflow-hidden"
         />
-        <div className="text-amber-400 text-6xl font-bold font-mono mt-[2rem]">
+        <div className="text-amber-400 text-2xl md:text-6xl font-bold font-mono mt-4 md:mt-[2rem]">
           GENESIS NFT
         </div>
-        <p className="text-white text-lg mt-[2rem] font-sans">
-          Collect the very first Circuit Breaker NFT and join the <br /> elite
-          OGs of Palladium
-        </p>
-        <div className="text-amber-400 text-3xl font-bold font-mono mt-[4rem]">
+        <div className="mt-4 ">
+          <span className="text-white text-lg mt-4 font-sans">
+            Collect the very first Circuit Breaker NFT and join the elite OGs of
+            Palladium
+          </span>
+        </div>
+        <div className="text-amber-400 text-xl lg:text-3xl font-bold font-mono mt-[2rem] md:mt-[4rem]">
           MINTING IS NOW AVAILABLE
         </div>
-
         {isConnected ? (
           mint.toString() === "0" ? (
             <button
-              className="w-[15rem] bg-amber-400 text-black text-lg font-bold font-mono mt-[2rem] px-4 py-2 "
+              className={`w-full md:w-[15rem] bg-amber-400 text-black text-lg font-bold font-mono mt-4 md:mt-[2rem] px-4 py-2 ${
+                isPending ? "opacity-50" : ""
+              }`}
               disabled={isPending}
               onClick={handleMint}
+              style={{ transition: "background-color 0.3s ease-in-out" }}
             >
-              {isPending ? "Minting" : "MINT NOW"}
+              {isPending ? "Minting..." : "MINT NOW"}
             </button>
           ) : (
-            <button
-              className="w-[15rem] bg-amber-400 text-black text-lg font-bold font-mono mt-[2rem] px-4 py-2 "
-              onClick={handleAlreadyMinted}
-            >
+            <button className="w-full md:w-[15rem] bg-amber-400 text-black text-lg font-bold font-mono mt-4 md:mt-[2rem] px-4 py-2">
               ALREADY MINTED
             </button>
           )
         ) : (
-          <div className="mt-[2rem]">
+          <div className="mt-4 md:mt-[2rem]">
             <CustomConnectButton />
             {/* <ConnectButton /> */}
           </div>
         )}
       </div>
-      {/* </>
-      ) : (
-        <div className="text-white text-lg font-sans mt-[2rem]">
-          Open this page in desktop to view the content.
-        </div> */}
-      {/* )} */}
-      <ToastContainer />
     </div>
   );
 }

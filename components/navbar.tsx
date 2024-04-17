@@ -11,7 +11,7 @@ function NavBar() {
       style={{ backgroundColor: "#272315" }}
     >
       <div className="flex items-center gap-x-4">
-        <div className="w-full min-w-[400px] rounded-xl">
+        <div className="w-full  rounded-xl">
           <Image src={pallad} alt="btc" width={150} />
         </div>
       </div>

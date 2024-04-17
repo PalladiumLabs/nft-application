@@ -7,7 +7,7 @@ const botanixChain: Chain = {
   id: 3636,
   name: "Botanix Testnet",
   // network: "BTC",
-  iconUrl: "../../../public/botanixLogo.svg",
+  iconUrl: "/img/b2.png",
   nativeCurrency: {
     decimals: 18,
     name: "Botanix Testnet",
