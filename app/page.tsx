@@ -4,6 +4,7 @@ import React from "react";
 import NavBar from "@/components/navbar";
 
 import Redeem from "./Redeem";
+import bgimg from "./assets/images/Background.png";
 
 export default function Home() {
   return (
@@ -26,7 +27,10 @@ export default function Home() {
 
     //   </div>
     // </div>
-    <div className="h-fit pb-48" style={{ backgroundColor: "#272315" }}>
+    <div
+      className="h-fit pb-48 bg-[url('./assets/images/Background.png')] bg-cover"
+      style={{ backgroundColor: "#272315" }}
+    >
       <NavBar />
       <Redeem />
     </div>

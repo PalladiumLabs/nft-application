@@ -11,9 +11,14 @@
   src: local('Inter'),
        url('./fonts/Inter/Inter-Regular.ttf') format('ttf') */
   font-family: "Montserrat";
-  src: local("Montserrat"), url(./src/config/fonts/Montserrat-VariableFont_wght.ttf);
+  src: local("Montserrat"),
+    url(./src/config/fonts/Montserrat-VariableFont_wght.ttf);
 }
-
+@font-face {
+  font-family: "Montechmed";
+  src: local("Montechmed"),
+    url(./src/config/fonts/Montech/MONTECHV01-Medium.otf);
+}
 .title-text {
   font-family: "Montech";
 }
