@@ -189,6 +189,14 @@ export default function Redeem() {
   const [newMint, setNewMint] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [transactionFailed, setTransactionFailed] = useState(false);
+  // const [twitterShare, setTwitterShare] = useState(
+  //   localStorage.getItem("twitterShare") === "true" ? true : false
+  // );
+  // const [discordShare, setDiscordShare] = useState(
+  //   localStorage.getItem("discordShare") === "true" ? true : false
+  // );
+  const [twitterShare, setTwitterShare] = useState(false);
+  const [discordShare, setDiscordShare] = useState(false);
 
   const router = useRouter();
 
@@ -217,7 +225,32 @@ export default function Redeem() {
   } = useWaitForTransactionReceipt({
     hash,
   });
+  useEffect(() => {
+    // Check if localStorage is available (client-side)
+    if (typeof window !== "undefined") {
+      const storedTwitterClicked = localStorage.getItem("twitterShare");
+      const storedDiscordClicked = localStorage.getItem("discordShare");
+      setTwitterShare(storedTwitterClicked === "true");
+      setDiscordShare(storedDiscordClicked === "true");
+    }
+  }, []);
+  // Function to handle clicking on Twitter link
+  const handleTwitterClick = () => {
+    setTwitterShare(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("twitterShare", "true");
+    }
+    // localStorage.setItem("twitterShare", "true");
+  };
 
+  // Function to handle clicking on Discord link
+  const handleDiscordClick = () => {
+    setDiscordShare(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("discordShare", "true");
+    }
+    // localStorage.setItem("discordShare", "true");
+  };
   const handleMint = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -288,13 +321,18 @@ export default function Redeem() {
                 className="twitter-follow-button"
                 href="https://twitter.com/PalladiumLabs"
                 target="_blank"
+                // onClick={handleTwitterClick}
               >
                 <b>X (Twitter)</b>
               </a>
             </span>{" "}
             and Join our{" "}
             <span>
-              <a href="https://discord.com/invite/9MMEyJ4JDz" target="_blank">
+              <a
+                href="https://discord.com/invite/9MMEyJ4JDz"
+                target="_blank"
+                // onClick={handleDiscordClick}
+              >
                 {" "}
                 <b>Discord Community</b>
               </a>
@@ -306,22 +344,60 @@ export default function Redeem() {
         <div className="text-lightyellow text-xl lg:text-3xl font-bold mt-[2rem] md:mt-[3rem] title-text">
           MINTING IS aVaILaBLE NOW
         </div>
-        <div className="flex lg:flex-row gap-x-2 lg:gap-x-4">
+        {isConnected ? (
+          <div className="flex    gap-x-2 lg:gap-x-4 ">
+            {" "}
+            <a
+              className="twitter-follow-button w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2"
+              href="https://twitter.com/PalladiumLabs"
+              target="_blank"
+              onClick={handleTwitterClick}
+            >
+              <div className="flex flex-row items-center justify-center gap-x-2">
+                FOLLOW ON X
+              </div>
+            </a>
+            <a
+              className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2"
+              href="https://discord.com/invite/9MMEyJ4JDz"
+              target="_blank"
+              onClick={handleDiscordClick}
+            >
+              {" "}
+              <span>JOIN DISCORD</span>
+            </a>
+          </div>
+        ) : (
+          <div></div>
+        )}
+        <div className="flex    gap-x-2 lg:gap-x-4 ">
           {isConnected ? (
-            // !isConfirmed ||
             mint.toString() === "0" ? (
               // mint.toString() === "0" ? (
               <>
-                <button
-                  className={`w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 ${
-                    isPending ? "opacity-50" : ""
-                  }`}
-                  disabled={isPending}
-                  onClick={handleMint}
-                  style={{ transition: "background-color 0.3s ease-in-out" }}
-                >
-                  {isPending ? "Minting..." : "MINT NOW"}
-                </button>
+                {twitterShare && discordShare ? (
+                  <button
+                    className={`w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 ${
+                      isPending ? "opacity-50" : ""
+                    }`}
+                    disabled={isPending}
+                    onClick={handleMint}
+                    style={{ transition: "background-color 0.3s ease-in-out" }}
+                  >
+                    {isPending ? "Minting..." : "MINT NOW"}
+                  </button>
+                ) : (
+                  <button
+                    className={`w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 md:mt-[2rem] px-4 py-2 opacity-50 ${
+                      !twitterShare && !discordShare && "cursor-not-allowed"
+                    }`}
+                    title="Follow on X and Join Discord to enable mint."
+                    style={{ transition: "background-color 0.3s ease-in-out" }}
+                  >
+                    MINT NOW
+                  </button>
+                )}
+
                 {/* <a
                   className="twitter-follow-button w-full md:w-[15rem] text-lightyellow text-lg font-medium font-Montechmed mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2"
                   href="https://twitter.com/PalladiumLabs"
@@ -348,37 +424,24 @@ export default function Redeem() {
           ) : (
             <div className="mt-4 md:mt-[2rem]">
               <CustomConnectButton />
-              {/* <div className="text-white text-xl">
-              Waiting for confirmation...
-            </div> */}
-
-              {/* <ConnectButton /> */}
             </div>
           )}
-          {/* <div className="w-full md:w-[15rem]  text-lightyellow text-lg font-medium font-Montechmed mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row  border border-lightyellow items-center justify-center place-items-center gap-x-2">
-            {" "}
+          {isConnected ? (
             <a
-              className="twitter-share-button items-center justify-center flex flex-row "
-              href="https://twitter.com/intent/tweet?text=Don't%20miss%20out%20on%20%40PalladiumLab%E2%80%99s%20Circuit%20Breaker%20Genesis%20NFT%20MINT!%20%F0%9F%8E%A8%F0%9F%8E%96%0A%0AMint%20now%20on%20%40BotanixLabs%20and%20become%20one%20of%20the%20exclusive%20OGs%20of%20Palladium!%20%F0%9F%A4%AF%0A%0AMint%20yours%20before%20it's%20too%20late!%20%E2%8F%B3%F0%9F%9A%A8
-              "
+              className="twitter-share-button w-full md:w-[15rem] text-lightyellow text-lg font-medium font-Montechmed mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2"
+              // href="https://twitter.com/intent/tweet?text=Don't%20miss%20out%20on%20%40PalladiumLabs%E2%80%99s%20Circuit%20Breaker%20Genesis%20NFT%20MINT!%20%F0%9F%8E%A8%F0%9F%8E%96%0A%0AMint%20now%20on%20%40BotanixLabs%20and%20become%20one%20of%20the%20exclusive%20OGs%20of%20Palladium!%20%F0%9F%A4%AF%0A%0AMint%20yours%20before%20it's%20too%20late!%20%E2%8F%B3%F0%9F%9A%A8"
+              href="https://twitter.com/intent/tweet?text=Don't%20miss%20out%20on%20%40PalladiumLabs%20Circuit%20Breaker%20Genesis%20NFT%20MINT!%20%F0%9F%8E%A8%F0%9F%8E%96%0A%0AMint%20now%20on%20%40BotanixLabs%20and%20become%20one%20of%20the%20exclusive%20OGs%20of%20Palladium!%20%F0%9F%A4%AF%0A%0AMint%20yours%20before%20it's%20too%20late!%20%E2%8F%B3%F0%9F%9A%A8"
+              target="_blank"
               data-size="large"
             >
-              SHARE ON{" "}
+              <div className="flex flex-row items-center justify-center gap-x-2">
+                SHARE ON
+                <Image src={twitter1} width={16} height={17} alt="twitter" />
+              </div>
             </a>
-            <Image src={twitter1} width={16} height={17} alt="twitter" />
-          </div> */}
-          <a
-            className="twitter-share-button w-full md:w-[15rem] text-lightyellow text-lg font-medium font-Montechmed mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2"
-            // href="https://twitter.com/intent/tweet?text=Don't%20miss%20out%20on%20%40PalladiumLabs%E2%80%99s%20Circuit%20Breaker%20Genesis%20NFT%20MINT!%20%F0%9F%8E%A8%F0%9F%8E%96%0A%0AMint%20now%20on%20%40BotanixLabs%20and%20become%20one%20of%20the%20exclusive%20OGs%20of%20Palladium!%20%F0%9F%A4%AF%0A%0AMint%20yours%20before%20it's%20too%20late!%20%E2%8F%B3%F0%9F%9A%A8"
-            href="https://twitter.com/intent/tweet?text=Don't%20miss%20out%20on%20%40PalladiumLabs%20Circuit%20Breaker%20Genesis%20NFT%20MINT!%20%F0%9F%8E%A8%F0%9F%8E%96%0A%0AMint%20now%20on%20%40BotanixLabs%20and%20become%20one%20of%20the%20exclusive%20OGs%20of%20Palladium!%20%F0%9F%A4%AF%0A%0AMint%20yours%20before%20it's%20too%20late!%20%E2%8F%B3%F0%9F%9A%A8"
-            target="_blank"
-            data-size="large"
-          >
-            <div className="flex flex-row items-center justify-center gap-x-2">
-              SHARE ON
-              <Image src={twitter1} width={16} height={17} alt="twitter" />
-            </div>
-          </a>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
       <Dialog
