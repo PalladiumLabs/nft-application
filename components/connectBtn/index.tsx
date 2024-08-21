@@ -39,7 +39,7 @@
 // 										style={{
 // 											display: "flex",
 // 											alignItems: "center",
-// 											backgroundColor: "#383427",
+// 											backgroundColor: "#2253FF",
 // 											height: 50,
 // 											borderRadius: 3,
 // 										}}>
@@ -63,7 +63,7 @@
 // 									<Button
 // 										onClick={openChainModal}
 // 										style={{
-// 											display: "flex", alignItems: "center", backgroundColor: "#383427",
+// 											display: "flex", alignItems: "center", backgroundColor: "#2253FF",
 
 // 											height: 50,
 
@@ -93,7 +93,7 @@
 // 									<Button onClick={openAccountModal}
 // 										style={{
 // 											display: "flex", alignItems: "center", height: 50,
-// 											backgroundColor: "#383427"
+// 											backgroundColor: "#2253FF"
 // 										}}
 
 // 									>
@@ -154,7 +154,7 @@ export const CustomConnectButton = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      backgroundColor: "#383427",
+                      backgroundColor: "#2253FF",
                       height: 50,
                       borderRadius: 3,
                     }}
@@ -182,7 +182,7 @@ export const CustomConnectButton = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      backgroundColor: "#383427",
+                      backgroundColor: "#2253FF",
 
                       height: 50,
                     }}
@@ -214,7 +214,7 @@ export const CustomConnectButton = () => {
                       display: "flex",
                       alignItems: "center",
                       height: 50,
-                      backgroundColor: "#383427",
+                      backgroundColor: "#2253FF",
                     }}
                   >
                     {account.displayName}

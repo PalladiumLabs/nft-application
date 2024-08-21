@@ -342,7 +342,7 @@ export default function Redeem() {
         </div>
 
         <div className="text-lightyellow text-xl lg:text-3xl font-bold mt-[2rem] md:mt-[3rem] title-text">
-          MINTING IS aVaILaBLE NOW
+          MINTING IS CLOSED
         </div>
         {isConnected ? (
           <div className="flex    gap-x-2 lg:gap-x-4 ">
