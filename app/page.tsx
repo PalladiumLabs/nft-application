@@ -4,6 +4,7 @@ import React from "react";
 import NavBar from "@/components/navbar";
 
 import Redeem from "./Redeem";
+import RedeemSepolia from "./RedeemSepolia";
 import bgimg from "./assets/images/Background.png";
 
 export default function Home() {
@@ -32,7 +33,8 @@ export default function Home() {
       style={{ backgroundColor: "#272315" }}
     >
       <NavBar />
-      <Redeem />
+      {/* <Redeem /> */}
+      <RedeemSepolia />
     </div>
   );
 }
