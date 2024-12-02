@@ -249,7 +249,7 @@ export default function RedeemSepolia() {
             )
           ) : (
             <div className="mt-4 md:mt-[2rem]">
-              <CustomConnectButton />
+              <CustomConnectButton className={""} />
             </div>
           )}
           {isConnected ? (
