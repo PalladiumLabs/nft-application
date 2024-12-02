@@ -42,12 +42,7 @@ export default function RedeemSepolia() {
   const [newMint, setNewMint] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [transactionFailed, setTransactionFailed] = useState(false);
-  // const [twitterShare, setTwitterShare] = useState(
-  //   localStorage.getItem("twitterShare") === "true" ? true : false
-  // );
-  // const [discordShare, setDiscordShare] = useState(
-  //   localStorage.getItem("discordShare") === "true" ? true : false
-  // );
+
   const [twitterShare, setTwitterShare] = useState(false);
   const [discordShare, setDiscordShare] = useState(false);
 
@@ -58,7 +53,7 @@ export default function RedeemSepolia() {
   );
 
   const nftContract = getContract(
-    "0xE7905f594523966703FBdA498edE1405c8277a6D",
+    "0x98308Df644D91B78a797493C184dF7A731ecb530",
     nftAbi,
     provider
   );
@@ -81,7 +76,6 @@ export default function RedeemSepolia() {
     hash,
   });
   useEffect(() => {
-    // Check if localStorage is available (client-side)
     if (typeof window !== "undefined") {
       const storedTwitterClicked = localStorage.getItem("twitterShare");
       const storedDiscordClicked = localStorage.getItem("discordShare");
@@ -89,24 +83,20 @@ export default function RedeemSepolia() {
       setDiscordShare(storedDiscordClicked === "true");
     }
   }, []);
-  // Function to handle clicking on Twitter link
   const handleTwitterClick = () => {
     setTwitterShare(true);
     if (typeof window !== "undefined") {
       localStorage.setItem("twitterShare", "true");
     }
     console.log("twitterShare", twitterShare);
-    // localStorage.setItem("twitterShare", "true");
   };
 
-  // Function to handle clicking on Discord link
   const handleDiscordClick = () => {
     setDiscordShare(true);
     if (typeof window !== "undefined") {
       localStorage.setItem("discordShare", "true");
     }
     console.log("discordShare", discordShare);
-    // localStorage.setItem("discordShare", "true");
   };
   const handleMint = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -114,7 +104,7 @@ export default function RedeemSepolia() {
     try {
       writeContract({
         abi: nftAbi,
-        address: "0xE7905f594523966703FBdA498edE1405c8277a6D",
+        address: "0x98308Df644D91B78a797493C184dF7A731ecb530",
         functionName: "safeMint",
         args: [address],
       });
@@ -166,19 +156,16 @@ export default function RedeemSepolia() {
           className="overflow-hidden"
         />
         <div className="text-lightyellow text-3xl md:text-6xl font-bold title-text mt-4 md:mt-[2rem]">
-          GENESIS NFT
+          Alpha NFT
         </div>
         <div className="mt-4 ">
           <span className="text-white text-lg mt-4 body-text">
-            {/* Collect the very first Circuit Breaker NFT and join the elite OGs of
-            Palladium */}
             Follow us on{" "}
             <span>
               <a
                 className="twitter-follow-button"
                 href="https://twitter.com/PalladiumLabs"
                 target="_blank"
-                // onClick={handleTwitterClick}
               >
                 <b>X (Twitter)</b>
               </a>
@@ -188,7 +175,6 @@ export default function RedeemSepolia() {
               <a
                 href="https://discord.com/invite/9MMEyJ4JDz"
                 target="_blank"
-                // onClick={handleDiscordClick}
               >
                 {" "}
                 <b>Discord Community</b>
@@ -230,7 +216,6 @@ export default function RedeemSepolia() {
         <div className="flex    gap-x-2 lg:gap-x-4 ">
           {isConnected ? (
             mint.toString() === "0" ? (
-              // mint.toString() === "0" ? (
               <>
                 {twitterShare && discordShare ? (
                   <button
@@ -254,22 +239,6 @@ export default function RedeemSepolia() {
                     MINT NOW
                   </button>
                 )}
-
-                {/* <a
-                  className="twitter-follow-button w-full md:w-[15rem] text-lightyellow text-lg font-medium font-Montechmed mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2"
-                  href="https://twitter.com/PalladiumLabs"
-                  data-size="large"
-                >
-                  <div className="flex flex-row items-center justify-center gap-x-2">
-                    FOLLOW ON
-                    <Image
-                      src={twitter1}
-                      width={16}
-                      height={17}
-                      alt="twitter"
-                    />
-                  </div>
-                </a> */}
               </>
             ) : (
               <>
@@ -286,13 +255,12 @@ export default function RedeemSepolia() {
           {isConnected ? (
             <a
               className="twitter-share-button w-full md:w-[15rem] text-lightyellow text-lg font-medium font-Montechmed mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2"
-              // href="https://twitter.com/intent/tweet?text=Don't%20miss%20out%20on%20%40PalladiumLabs%E2%80%99s%20Circuit%20Breaker%20Genesis%20NFT%20MINT!%20%F0%9F%8E%A8%F0%9F%8E%96%0A%0AMint%20now%20on%20%40BotanixLabs%20and%20become%20one%20of%20the%20exclusive%20OGs%20of%20Palladium!%20%F0%9F%A4%AF%0A%0AMint%20yours%20before%20it's%20too%20late!%20%E2%8F%B3%F0%9F%9A%A8"
               href="https://twitter.com/intent/tweet?text=Don't%20miss%20out%20on%20%40PalladiumLabs%20Circuit%20Breaker%20Genesis%20NFT%20MINT!%20%F0%9F%8E%A8%F0%9F%8E%96%0A%0AMint%20now%20on%20%40BotanixLabs%20and%20become%20one%20of%20the%20exclusive%20OGs%20of%20Palladium!%20%F0%9F%A4%AF%0A%0AMint%20yours%20before%20it's%20too%20late!%20%E2%8F%B3%F0%9F%9A%A8"
               target="_blank"
               data-size="large"
             >
               <div className="flex flex-row items-center justify-center gap-x-2">
-                SHARE ON
+                {/* SHARE ON */}
                 <Image src={twitter1} width={16} height={17} alt="twitter" />
               </div>
             </a>
