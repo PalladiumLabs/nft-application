@@ -99,9 +99,7 @@ export const CustomConnectButton: React.FC<Props>  = ({ className }) => {
 										<h2 className="body-text">
 
 											{account.displayName}
-											{account.displayBalance
-												? ` (${account.displayBalance})`
-												: ""}
+											{account.displayBalance && account.balanceFormatted ? ` (${parseFloat(account.balanceFormatted).toFixed(8)})` : ""}
 										</h2>
 									</Button>
 								</div>

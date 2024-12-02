@@ -2,7 +2,6 @@
 import React from "react";
 import NavBar from "@/components/navbar";
 import RedeemSepolia from "./RedeemSepolia";
-import Redeem from "./Redeem";
 
 export default function Home() {
   return (
@@ -11,7 +10,7 @@ export default function Home() {
       style={{ backgroundColor: "#272315" }}
     >
       <NavBar />
-      <Redeem />
+      <RedeemSepolia />
     </div>
   );
 }
