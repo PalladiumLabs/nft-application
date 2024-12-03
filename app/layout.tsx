@@ -15,9 +15,9 @@ interface CustomMetadata {
 }
 
 export const metadata: CustomMetadata = {
-  title: "Palladium Alpha NFT",
+  title: "Palladium Circuit Breaker Testnet NFT",
   description:
-    "Collect the very first Circuit Breaker NFT and join the elite OGs of Palladium",
+    "Collect the Testnet Circuit Breaker NFT and join the elite OGs of Palladium",
   image: "/metaimage.jpeg",
 };
 
