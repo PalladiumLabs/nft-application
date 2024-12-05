@@ -14,10 +14,10 @@ const botanixChain: Chain = {
   },
   rpcUrls: {
     default: {
-      http: ["https://node.botanixlabs.dev"],
+      http: ["https://rpc.ankr.com/botanix_testnet"],
     },
     public: {
-      http: ["https://node.botanixlabs.dev"],
+      http: ["https://rpc.ankr.com/botanix_testnet"],
     },
   },
 };
@@ -25,5 +25,5 @@ const botanixChain: Chain = {
 export const wagmiConfig = getDefaultConfig({
   appName: "My RainbowKit App",
   projectId: "ee56c353983496c87480ff2ae841a933",
-  chains: [ botanixChain],
+  chains: [botanixChain],
 });
