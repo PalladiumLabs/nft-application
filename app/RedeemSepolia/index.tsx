@@ -119,8 +119,8 @@ export default function RedeemSepolia() {
         {mint.toString() === "0" ? (
           <Image src={img} width={600} height={450} alt="home" />
         ) : (
-          <div className=" h-[30rem] lg:ml-56 lg:mr-10">
-            <Image src={gif} alt="home" />
+          <div className=" md:h-[30rem] lg:ml-56 lg:mr-10">
+            <Image src={gif} width={550} height={300} alt="home" />
             <p className="text-lightyellow title-text text-2xl font-extrabold text-center mt-2 ">
               Token ID:<span>{""}</span> {apiResponse}
             </p>
