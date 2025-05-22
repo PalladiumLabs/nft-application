@@ -4,7 +4,7 @@
   /* Display items in a column */
   align-items: center;
   background-color: #000;
-  border-radius: 8px;
+  /*border-radius: 8px;*/
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -16,15 +16,32 @@
   font-family: "Montserrat";
   font-weight: 500;
 }
+.confirmation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fbbf24; /* Yellow background */
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.confirmation-message {
+  color: black;
+  font-size: 2rem;
+  font-family: "Montserrat";
+  font-weight: 600;
+}
+
 
 .waiting-image {
-  width: 100px;
-  height: auto;
+  width: 200px;
+  height: 200px;
 }
 
 .p-dialog-draggable .p-dialog-header {
   background-color: #fbbf24;
-  border-radius: 5px 5px 0 0;
-  padding: 15px;
+ 
+  padding: 10px;
   border-bottom: none;
 }

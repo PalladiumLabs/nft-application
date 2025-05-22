@@ -29,7 +29,7 @@ export default function Home() {
     //   </div>
     // </div>
     <div
-      className="h-fit pb-48 bg-[url('./assets/images/Background.png')] bg-cover"
+      className="h-[100vh] pb-48 bg-[url('./assets/images/Background.png')] bg-cover"
       style={{ backgroundColor: "#272315" }}
     >
       <NavBar />

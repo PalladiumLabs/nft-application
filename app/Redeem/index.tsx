@@ -203,7 +203,8 @@ export default function Redeem() {
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 
   const nftContract = getContract(
-    "0xD8C448dD8A4785835da7af461ebB015dD83d4a12",
+    //"0xD8C448dD8A4785835da7af461ebB015dD83d4a12",
+    "0xbcDd44686125Cf838Bb077F119D7acbADd00E569",
     nftAbi,
     provider
   );
@@ -257,7 +258,8 @@ export default function Redeem() {
     try {
       writeContract({
         abi: nftAbi,
-        address: "0xD8C448dD8A4785835da7af461ebB015dD83d4a12",
+      //  address: "0xD8C448dD8A4785835da7af461ebB015dD83d4a12",
+      address: "0xbcDd44686125Cf838Bb077F119D7acbADd00E569",
         functionName: "safeMint",
         args: [address],
       });

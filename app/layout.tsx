@@ -49,9 +49,9 @@ interface CustomMetadata {
 }
 
 export const metadata: CustomMetadata = {
-  title: "Palladium Genesis NFT",
+  title: "Palladium Ignition NFT",
   description:
-    "Collect the very first Circuit Breaker NFT and join the elite OGs of Palladium",
+    "Collect the penultimate NFT of Circuit Breaker ",
   image: "/metaimage.jpeg",
 };
 

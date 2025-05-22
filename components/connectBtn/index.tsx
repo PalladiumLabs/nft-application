@@ -154,9 +154,10 @@ export const CustomConnectButton = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      backgroundColor: "#2253FF",
+                      backgroundColor: "#f5d64e",
                       height: 50,
-                      borderRadius: 3,
+                      borderRadius: 0,
+                     color:"black",
                     }}
                   >
                     Connect Wallet
@@ -182,9 +183,11 @@ export const CustomConnectButton = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      backgroundColor: "#2253FF",
-
+                      backgroundColor: "#272315",
+                      color:"white",
                       height: 50,
+                      borderRadius: 0,
+                      border:"1px solid white",
                     }}
                   >
                     {chain.hasIcon && (
@@ -192,7 +195,7 @@ export const CustomConnectButton = () => {
                         style={{
                           width: 28,
                           height: 28,
-                          borderRadius: 0,
+                         borderRadius: 0,
                           marginRight: 4,
                         }}
                       >
@@ -214,7 +217,10 @@ export const CustomConnectButton = () => {
                       display: "flex",
                       alignItems: "center",
                       height: 50,
-                      backgroundColor: "#2253FF",
+                      backgroundColor: "#272315",
+                      color:"white",
+                      borderRadius: 0,
+                      border:"1px solid white",
                     }}
                   >
                     {account.displayName}
