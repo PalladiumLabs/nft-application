@@ -149,7 +149,7 @@ export default function RedeemSepolia() {
           className="overflow-hidden"
         />
         <div className="text-lightyellow uppercase text-3xl md:text-6xl font-bold title-text mt-4 md:mt-[2rem]">
-          ignition NFT
+          ignition NFT
         </div>
 
         <div className="mt-4">
@@ -166,7 +166,7 @@ export default function RedeemSepolia() {
             <a href="https://discord.com/invite/9MMEyJ4JDz" target="_blank">
               <b>Discord Community<br/></b>
             </a>{" "}
-            to claim your OG role.
+            to mint this.
           </span>
         </div>
 
@@ -258,11 +258,11 @@ export default function RedeemSepolia() {
     </div>
   )}
 
-  {isConfirmed && (
+  {/*isConfirmed && (
     <div className="confirmation-container">
       <div className="confirmation-message">Transaction confirmed.</div>
     </div>
-  )}
+  )*/}
 
   {isFailed &&
     toast.error("Transaction failed. Please try again.", {
