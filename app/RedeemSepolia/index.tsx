@@ -149,11 +149,15 @@ export default function RedeemSepolia() {
           className="overflow-hidden"
         />
         <div className="text-lightyellow uppercase text-3xl md:text-6xl font-bold title-text mt-4 md:mt-[2rem]">
-          ignition NFT
+          ascension NFT
         </div>
 
         <div className="mt-4">
-          <span className="text-white text-lg mt-4 body-text">
+        <div className="mt-4">
+  {/*<span className="text-white text-lg mt-4 body-text">
+    Minting is now closed
+  </span>*/}
+  <span className="text-white text-lg mt-4 body-text">
             Follow us on{" "}
             <a
               className="twitter-follow-button"
@@ -168,6 +172,7 @@ export default function RedeemSepolia() {
             </a>{" "}
             to mint this.
           </span>
+</div>
         </div>
 
         {isConnected && (
@@ -214,7 +219,8 @@ export default function RedeemSepolia() {
               ) : (
                 <button
                   className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2 opacity-50 cursor-not-allowed"
-                  title="Follow on X and Join Discord to enable mint."
+                 
+                   title="Follow on X and Join Discord to enable mint."
                 >
                   MINT NOW
                 </button>
