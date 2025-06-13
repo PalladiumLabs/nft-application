@@ -24,7 +24,7 @@ import img from "../assets/images/Group 926.png";
 import img1 from "../assets/images/Group 906.png";
 import gif from "../assets/images/NFT.gif";
 import twitter1 from "../assets/images/image 52 (Traced).svg";
-
+import { generateProofAndVerify } from "../verifyProof";
 export default function RedeemSepolia() {
   const { address, isConnected } = useAccount();
   const [mint, setMint] = useState("0");
@@ -68,7 +68,28 @@ export default function RedeemSepolia() {
 
     setMint("0");
   };
+useEffect(() => {
+  const verifyUser = async () => {
+    if (isConnected && address) {
+      try {
+        const { isVerified, proof } = await generateProofAndVerify(address);
+        console.log("✅ Proof:", proof);
+        console.log("🔐 Is Verified?", isVerified);
 
+        if (isVerified) {
+          toast.success("✅ You are whitelisted!");
+        } else {
+          toast.warn("⚠️ You are not whitelisted.");
+        }
+      } catch (err) {
+        console.error("Verification error:", err);
+        toast.error("❌ Failed to verify Merkle proof.");
+      }
+    }
+  };
+
+  verifyUser();
+}, [isConnected, address]);
   const { data: hash, isPending, writeContract } = useWriteContract();
   const {
     isLoading: isConfirming,
