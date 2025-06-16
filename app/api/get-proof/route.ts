@@ -2,7 +2,6 @@ import { NextRequest } from "next/server";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import rawTreeData from "../../src/tree.json";
 
-// ✅ Force dynamic rendering to fix the 500 error
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {

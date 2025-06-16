@@ -34,11 +34,12 @@ export default function RedeemSepolia() {
   const [discordShare, setDiscordShare] = useState(false);
   const router = useRouter();
   const [isWhitelisted, setIsWhitelisted] = useState<boolean | null>(null);
+const [proof, setProof] = useState<string[]>([]);
 
   const provider = new ethers.JsonRpcProvider("https://node.botanixlabs.dev/");
 
   const nftContract = getContract(
-    "0xbcDd44686125Cf838Bb077F119D7acbADd00E569",
+    "0xEC253035e29B9F6F932325ae68A8bFD8020c3807",
     nftAbi,
     provider
   );
@@ -77,10 +78,12 @@ export default function RedeemSepolia() {
       const res = await fetch(`/api/get-proof?address=${address}`);
       const data = await res.json();
 
-      if (res.ok && data?.found && Array.isArray(data.proof) && data.proof.length > 0) {
-        setIsWhitelisted(true);
-        toast.success("✅ You are whitelisted!");
-      } else {
+     if (res.ok && data?.found && Array.isArray(data.proof)) {
+  setIsWhitelisted(true);
+  setProof(data.proof);
+  toast.success("✅ You are whitelisted!");
+}
+ else {
         setIsWhitelisted(false);
         toast.warn("⚠️ You are not whitelisted.");
       }
@@ -114,9 +117,9 @@ export default function RedeemSepolia() {
     try {
       await writeContract({
         abi: nftAbi,
-        address: "0xbcDd44686125Cf838Bb077F119D7acbADd00E569",
+        address: "0xEC253035e29B9F6F932325ae68A8bFD8020c3807",
         functionName: "safeMint",
-        args: [address],
+        args: [address,proof],
       });
     } catch (error) {
       console.error("Minting error:", error);
@@ -232,36 +235,36 @@ export default function RedeemSepolia() {
         )}
 
         <div className="flex gap-x-2 lg:gap-x-4">
-          {isConnected ? (
-            mint === "0" && !justMinted ? (
-              twitterShare && discordShare ? (
-                <button
-                  className={`w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2 ${
-                    isPending ? "opacity-50" : ""
-                  }`}
-                  disabled={isPending}
-                  onClick={handleMint}
-                >
-                  {isPending ? "Minting..." : "MINT NOW"}
-                </button>
-              ) : (
-                <button
-                  className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2 opacity-50 cursor-not-allowed"
-                  title="Follow on X and Join Discord to enable mint."
-                >
-                  MINT NOW
-                </button>
-              )
-            ) : (
-              <button className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2">
-                ALREADY MINTED
-              </button>
-            )
-          ) : (
-            <div className="mt-4">
-              <CustomConnectButton />
-            </div>
-          )}
+         {isConnected ? (
+  mint === "0" && !justMinted ? (
+    twitterShare && discordShare && isWhitelisted ? (
+      <button
+        className={`w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2 ${
+          isPending ? "opacity-50" : ""
+        }`}
+        disabled={isPending}
+        onClick={handleMint}
+      >
+        {isPending ? "Minting..." : "MINT NOW"}
+      </button>
+    ) : (
+      <button
+        className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2 opacity-50 cursor-not-allowed"
+        title="You must be whitelisted and follow social links to mint."
+      >
+        MINT NOW
+      </button>
+    )
+  ) : (
+    <button className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2">
+      ALREADY MINTED
+    </button>
+  )
+) : (
+  <div className="mt-4">
+    <CustomConnectButton />
+  </div>
+)}
 
           {isConnected && (
             <a
