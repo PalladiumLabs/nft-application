@@ -24,7 +24,7 @@ import img from "../assets/images/Group 926.png";
 import img1 from "../assets/images/Group 906.png";
 import gif from "../assets/images/NFT.gif";
 import twitter1 from "../assets/images/image 52 (Traced).svg";
-import { generateProofAndVerify } from "../verifyProof";
+
 export default function RedeemSepolia() {
   const { address, isConnected } = useAccount();
   const [mint, setMint] = useState("0");
@@ -33,6 +33,7 @@ export default function RedeemSepolia() {
   const [twitterShare, setTwitterShare] = useState(false);
   const [discordShare, setDiscordShare] = useState(false);
   const router = useRouter();
+  const [isWhitelisted, setIsWhitelisted] = useState<boolean | null>(null);
 
   const provider = new ethers.JsonRpcProvider("https://node.botanixlabs.dev/");
 
@@ -68,28 +69,31 @@ export default function RedeemSepolia() {
 
     setMint("0");
   };
-useEffect(() => {
-  const verifyUser = async () => {
-    if (isConnected && address) {
-      try {
-        const { isVerified, proof } = await generateProofAndVerify(address);
-        console.log("✅ Proof:", proof);
-        console.log("🔐 Is Verified?", isVerified);
+  useEffect(() => {
+  const checkWhitelistStatus = async () => {
+    if (!isConnected || !address) return;
 
-        if (isVerified) {
-          toast.success("✅ You are whitelisted!");
-        } else {
-          toast.warn("⚠️ You are not whitelisted.");
-        }
-      } catch (err) {
-        console.error("Verification error:", err);
-        toast.error("❌ Failed to verify Merkle proof.");
+    try {
+      const res = await fetch(`/api/get-proof?address=${address}`);
+      const data = await res.json();
+
+      if (res.ok && data?.found && Array.isArray(data.proof) && data.proof.length > 0) {
+        setIsWhitelisted(true);
+        toast.success("✅ You are whitelisted!");
+      } else {
+        setIsWhitelisted(false);
+        toast.warn("⚠️ You are not whitelisted.");
       }
+    } catch (err) {
+      console.error("Whitelist check failed:", err);
+      setIsWhitelisted(false);
+      toast.error("❌ Failed to verify whitelist status.");
     }
   };
 
-  verifyUser();
+  checkWhitelistStatus();
 }, [isConnected, address]);
+
   const { data: hash, isPending, writeContract } = useWriteContract();
   const {
     isLoading: isConfirming,
@@ -172,28 +176,31 @@ useEffect(() => {
         <div className="text-lightyellow uppercase text-3xl md:text-6xl font-bold title-text mt-4 md:mt-[2rem]">
           ascension NFT
         </div>
-
+       
         <div className="mt-4">
-        <div className="mt-4">
-  {/*<span className="text-white text-lg mt-4 body-text">
+          <div className="mt-4">
+            {/*<span className="text-white text-lg mt-4 body-text">
     Minting is now closed
   </span>*/}
-  <span className="text-white text-lg mt-4 body-text">
-            Follow us on{" "}
-            <a
-              className="twitter-follow-button"
-              href="https://twitter.com/PalladiumLabs"
-              target="_blank"
-            >
-              <b>X (Twitter)</b>
-            </a>{" "}
-            and Join our{" "}
-            <a href="https://discord.com/invite/9MMEyJ4JDz" target="_blank">
-              <b>Discord Community<br/></b>
-            </a>{" "}
-            to mint this.
-          </span>
-</div>
+            <span className="text-white text-lg mt-4 body-text">
+              Follow us on{" "}
+              <a
+                className="twitter-follow-button"
+                href="https://twitter.com/PalladiumLabs"
+                target="_blank"
+              >
+                <b>X (Twitter)</b>
+              </a>{" "}
+              and Join our{" "}
+              <a href="https://discord.com/invite/9MMEyJ4JDz" target="_blank">
+                <b>
+                  Discord Community
+                  <br />
+                </b>
+              </a>{" "}
+              to mint this.
+            </span>
+          </div>
         </div>
 
         {isConnected && (
@@ -240,8 +247,7 @@ useEffect(() => {
               ) : (
                 <button
                   className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2 opacity-50 cursor-not-allowed"
-                 
-                   title="Follow on X and Join Discord to enable mint."
+                  title="Follow on X and Join Discord to enable mint."
                 >
                   MINT NOW
                 </button>
@@ -271,33 +277,31 @@ useEffect(() => {
           )}
         </div>
       </div>
-<Dialog
-  visible={isModalVisible}
-  onHide={() => setIsModalVisible(false)}
-  closable={false}
-  showHeader={false}
-  className="custom-dialog"
->
-  {isConfirming && (
-    <div className="waiting-container">
-      <div className="waiting-message">Minting NFT ✨</div>
-      <Image src={gif} className="waiting-image" alt="gif" />
-    </div>
-  )}
+      <Dialog
+        visible={isModalVisible}
+        onHide={() => setIsModalVisible(false)}
+        closable={false}
+        showHeader={false}
+        className="custom-dialog"
+      >
+        {isConfirming && (
+          <div className="waiting-container">
+            <div className="waiting-message">Minting NFT ✨</div>
+            <Image src={gif} className="waiting-image" alt="gif" />
+          </div>
+        )}
 
-  {/*isConfirmed && (
+        {/*isConfirmed && (
     <div className="confirmation-container">
       <div className="confirmation-message">Transaction confirmed.</div>
     </div>
   )*/}
 
-  {isFailed &&
-    toast.error("Transaction failed. Please try again.", {
-      position: "top-center",
-    })}
-</Dialog>
-
-
+        {isFailed &&
+          toast.error("Transaction failed. Please try again.", {
+            position: "top-center",
+          })}
+      </Dialog>
 
       <ToastContainer />
     </div>
