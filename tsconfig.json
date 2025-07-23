@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es2015", // ⬅️ UPGRADE target to enable iterables
+    "lib": ["dom", "dom.iterable", "es2015"], // ⬅️ Ensure ES2015 is here
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,6 +22,11 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/navbar.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

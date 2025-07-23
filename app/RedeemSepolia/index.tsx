@@ -32,42 +32,6 @@ export default function RedeemSepolia() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [twitterShare, setTwitterShare] = useState(false);
   const [discordShare, setDiscordShare] = useState(false);
-  const router = useRouter();
-
-  const provider = new ethers.JsonRpcProvider("https://node.botanixlabs.dev/");
-
-  const nftContract = getContract(
-    "0xbcDd44686125Cf838Bb077F119D7acbADd00E569",
-    nftAbi,
-    provider
-  );
-
-  // ✅ Retry logic for delayed blockchain indexing
-  const mintStatus = async (retries = 5, delay = 1500) => {
-    if (!address) {
-      setMint("0");
-      return;
-    }
-
-    for (let i = 0; i < retries; i++) {
-      try {
-        const minted = await nftContract.idOf(address);
-        const tokenId = minted.toString();
-        console.log(`[MintStatus] Attempt ${i + 1}: tokenId = ${tokenId}`);
-
-        if (tokenId !== "0") {
-          setMint(tokenId);
-          return;
-        }
-      } catch (error) {
-        console.error("Error checking mint status:", error);
-      }
-
-      await new Promise((res) => setTimeout(res, delay));
-    }
-
-    setMint("0");
-  };
 
   const { data: hash, isPending, writeContract } = useWriteContract();
   const {
@@ -76,26 +40,33 @@ export default function RedeemSepolia() {
     isError: isFailed,
   } = useWaitForTransactionReceipt({ hash });
 
-  const handleTwitterClick = () => {
-    setTwitterShare(true);
-  };
+  const provider = new ethers.JsonRpcProvider("https://node.botanixlabs.dev/");
+  const nftContract = getContract(
+    "0xEC253035e29B9F6F932325ae68A8bFD8020c3807",
+    nftAbi,
+    provider
+  );
 
-  const handleDiscordClick = () => {
-    setDiscordShare(true);
-  };
-
-  const handleMint = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      await writeContract({
-        abi: nftAbi,
-        address: "0xbcDd44686125Cf838Bb077F119D7acbADd00E569",
-        functionName: "safeMint",
-        args: [address],
-      });
-    } catch (error) {
-      console.error("Minting error:", error);
+  // Only check mint status
+  const mintStatus = async (retries = 5, delay = 1500) => {
+    if (!address) {
+      setMint("0");
+      return;
     }
+    for (let i = 0; i < retries; i++) {
+      try {
+        const minted = await nftContract.idOf(address);
+        const tokenId = minted.toString();
+        if (tokenId !== "0") {
+          setMint(tokenId);
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking mint status:", error);
+      }
+      await new Promise((res) => setTimeout(res, delay));
+    }
+    setMint("0");
   };
 
   useEffect(() => {
@@ -113,7 +84,7 @@ export default function RedeemSepolia() {
         mintStatus();
         setJustMinted(true);
         setIsModalVisible(false);
-      }, 3000); // Let chain sync
+      }, 3000);
     } else if (isFailed) {
       setIsModalVisible(false);
     }
@@ -125,6 +96,23 @@ export default function RedeemSepolia() {
     }
   }, [isConfirming]);
 
+  const handleTwitterClick = () => setTwitterShare(true);
+  const handleDiscordClick = () => setDiscordShare(true);
+
+  const handleMint = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await writeContract({
+        abi: nftAbi,
+        address: "0xEC253035e29B9F6F932325ae68A8bFD8020c3807",
+        functionName: "safeMint",
+        args: [address],
+      });
+    } catch (error) {
+      console.error("Minting error:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row items-center justify-center max-sm:px-5 ">
       <div className="md:mr-8 md:mt-[4rem]">
@@ -133,14 +121,14 @@ export default function RedeemSepolia() {
         ) : (
           <div className="h-96 w-96  lg:mr-10 lg:ml-56">
             <Image src={gif} alt="home" />
-            <p className="text-lightyellow title-text text-2xl font-extrabold text-center mt-2">
+            <p className="text-lightyellow title-text text-2xl font-extrabold text-center mt-2 ">
               Token ID: {mint}
             </p>
           </div>
         )}
       </div>
 
-      <div className="mt-4 md:mt-[4rem]">
+      <div className="mt-20 md:mt-[4rem]">
         <Image
           src={img1}
           width={600}
@@ -149,25 +137,13 @@ export default function RedeemSepolia() {
           className="overflow-hidden"
         />
         <div className="text-lightyellow uppercase text-3xl md:text-6xl font-bold title-text mt-4 md:mt-[2rem]">
-          ignition NFT
+          ascension NFT
         </div>
 
         <div className="mt-4">
-          <span className="text-white text-lg mt-4 body-text">
-            Follow us on{" "}
-            <a
-              className="twitter-follow-button"
-              href="https://twitter.com/PalladiumLabs"
-              target="_blank"
-            >
-              <b>X (Twitter)</b>
-            </a>{" "}
-            and Join our{" "}
-            <a href="https://discord.com/invite/9MMEyJ4JDz" target="_blank">
-              <b>Discord Community<br/></b>
-            </a>{" "}
-            to mint this.
-          </span>
+         {isConnected&&( <span className="text-white uppercase text-lg mt-4 body-text">
+            Minting is now closed
+          </span>)}
         </div>
 
         {isConnected && (
@@ -213,14 +189,15 @@ export default function RedeemSepolia() {
                 </button>
               ) : (
                 <button
-                  className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2 opacity-50 cursor-not-allowed"
-                  title="Follow on X and Join Discord to enable mint."
+                  className="w-full disabled: md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2 opacity-50 cursor-not-allowed"
+                  title="Minting is closed. Please follow us on X and join our Discord to stay updated."
+                  disabled
                 >
-                  MINT NOW
+                  MINTING CLOSED
                 </button>
               )
             ) : (
-              <button className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2">
+              <button className="w-full md:w-[15rem] bg-lightyellow text-black text-lg font-bold title-text mt-4 px-4 py-2" disabled>
                 ALREADY MINTED
               </button>
             )
@@ -244,33 +221,25 @@ export default function RedeemSepolia() {
           )}
         </div>
       </div>
-<Dialog
-  visible={isModalVisible}
-  onHide={() => setIsModalVisible(false)}
-  closable={false}
-  showHeader={false}
-  className="custom-dialog"
->
-  {isConfirming && (
-    <div className="waiting-container">
-      <div className="waiting-message">Minting NFT ✨</div>
-      <Image src={gif} className="waiting-image" alt="gif" />
-    </div>
-  )}
+      <Dialog
+        visible={isModalVisible}
+        onHide={() => setIsModalVisible(false)}
+        closable={false}
+        showHeader={false}
+        className="custom-dialog"
+      >
+        {isConfirming && (
+          <div className="waiting-container">
+            <div className="waiting-message">Minting NFT ✨</div>
+            <Image src={gif} className="waiting-image" alt="gif" />
+          </div>
+        )}
 
-  {/*isConfirmed && (
-    <div className="confirmation-container">
-      <div className="confirmation-message">Transaction confirmed.</div>
-    </div>
-  )*/}
-
-  {isFailed &&
-    toast.error("Transaction failed. Please try again.", {
-      position: "top-center",
-    })}
-</Dialog>
-
-
+        {isFailed &&
+          toast.error("Transaction failed. Please try again.", {
+            position: "top-center",
+          })}
+      </Dialog>
 
       <ToastContainer />
     </div>
